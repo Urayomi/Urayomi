@@ -8,7 +8,7 @@ export default function Search() {
     const location = useLocation();
     const { config, setSearch } = useConfigStore();
     const { searchResults, searchQuery } = config;
-
+    console.log(searchResults)
 
     useEffect(() => {
         if (location.state?.results && location.state?.query) {
