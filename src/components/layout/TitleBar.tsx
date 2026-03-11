@@ -5,7 +5,8 @@ import {
      Square2StackIcon,
      StopIcon,
      XMarkIcon,
-     MagnifyingGlassIcon
+     MagnifyingGlassIcon,
+     ArrowLeftIcon
 } from '@heroicons/react/24/outline';
 import { useConfigStore } from '../../stores/configStore';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +16,7 @@ export default function TitleBar() {
      const [isMaximized, setIsMaximized] = useState(false);
      const appWindow = useMemo(() => getCurrentWindow(), []);
      const [query, setQuery] = useState("");
-     const navigate = useNavigate();
+     const { config, setPageRoute } = useConfigStore();
 
      async function handleSearch() {
           if (!query.trim()) return;
@@ -70,6 +71,14 @@ export default function TitleBar() {
                          <span className="text-[10px] font-black tracking-[0.2em] uppercase text-primary-text">Urayomi</span>
                     </div>
                </div>
+               <div className='h-full'>
+                    <button
+                         onClick={() => setPageRoute(config.currentPage, "/")}>
+                         <ArrowLeftIcon width={16} />
+                    </button>
+
+               </div>
+
 
                <div className="flex-1 flex"></div>
 

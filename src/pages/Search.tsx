@@ -57,7 +57,7 @@ export default function Search() {
 
                             <div className="relative group">
                                 <div
-                                    className={`relative flex flex-wrap gap-5 overflow-hidden transition-[max-height] duration-500 ease-in-out ${doExpand ? "max-h-none" : "max-h-80"
+                                    className={`relative flex flex-wrap gap-5 overflow-hidden transition-[max-height] duration-500 ease-in-out ${doExpand ? "max-h-none" : "max-h-85"
                                         }`}
                                 >
                                     {results.map((book: Manga) => (
@@ -65,7 +65,7 @@ export default function Search() {
                                     ))}
 
                                     {!doExpand && doWrap && (
-                                        <div className="absolute bottom-0 left-0 w-full h-32 bg-linear-to-t from-background via-background/80 to-transparent z-10 pointer-events-none" />
+                                        <div className="absolute bottom-0 left-0 w-full h-20 bg-linear-to-t from-background via-background/80 to-transparent z-10 pointer-events-none" />
                                     )}
                                 </div>
 
@@ -75,7 +75,7 @@ export default function Search() {
                                             }`}
                                     >
                                         <button
-                                            className="px-8 py-2.5 bg-white/10 hover:bg-white/20 text-primary-text rounded-xl text-sm font-bold transition-all"
+                                            className="px-8 py-2.5 bg-surface hover:bg-surface/80 text-primary-text rounded-xl text-sm font-bold transition-all"
                                             onClick={() => toggleExpand(source)}
                                         >
                                             {doExpand
