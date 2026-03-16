@@ -14,7 +14,7 @@
      --font-ubuntu: "Ubuntu", sans-serif;
      --font-cascadia: "Cascadia Code", sans-serif;
      --font-lato: "Lato", sans-serif;
-     --font-inter: "Inter", sans-serif;
+     --font-inter: "Inter", sans-serif; 
      --font-poppins: "Poppins", sans-serif;
      --font-tiro-bangla: "Tiro Bangla", serif;
      
@@ -25,7 +25,7 @@
 }
 
 
-.titlebar {
+.titlebar {            
   height: 40px;
   user-select: none;
   top: 0;
