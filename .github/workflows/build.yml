@@ -130,27 +130,12 @@ jobs:
         run: npm ci
       - name: init iOS project
         run: npm run tauri ios init
-      - name: build iOS app (no signing)
-        run: |
-          xcodebuild \
-            -scheme Urayomi_iOS \
-            -configuration Release \
-            archive \
-            -archivePath build/Urayomi.xcarchive \
-            -workspace src-tauri/gen/apple/Urayomi.xcodeproj/project.xcworkspace \
-            -skipPackagePluginValidation \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
-      - name: package IPA
-        run: |
-          mkdir Payload
-          cp -r build/Urayomi.xcarchive/Products/Applications/Urayomi.app Payload
-          zip -r Urayomi.ipa Payload
-      - name: upload IPA to release
+      - name: build iOS IPA (unsigned, sideloadable)
+        run: npm run tauri ios build -- --export-method debugging
+      - name: upload iOS IPA to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
-          files: Urayomi.ipa
+          files: src-tauri/gen/apple/build/arm64/*.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
