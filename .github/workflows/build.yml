@@ -166,7 +166,7 @@ jobs:
           APPLE_DEVELOPMENT_TEAM: XXXXXXXXXX
       - name: package IPA manually
         run: |
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "lnreader.app" -path "*/release-iphoneos/*" | head -1)
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "lnreader.app" -path "*/Build/Products/release-iphoneos/*" | head -1)
           echo "Found app at: $APP_PATH"
           mkdir -p Payload
           cp -r "$APP_PATH" Payload/
