@@ -34,7 +34,7 @@ function App() {
   }, []);
 
   return (
-    <div className="w-screen h-screen flex flex-row overflow-hidden relative bg-surface">
+    <div className={`w-screen ${config.isMobile ? "h-full" : "h-screen"} flex flex-row overflow-hidden relative bg-surface`}>
       {!config.isMobile && <Sidebar />}
 
       <div className={`flex-1 flex flex-col bg-surface overflow-hidden ${!config.isMobile && "ml-13"}`}>

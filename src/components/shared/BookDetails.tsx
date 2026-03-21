@@ -1,14 +1,10 @@
-import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { MangaDetail } from "../../types/ExtensionData";
-
-// 1. Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
 import { useConfigStore } from "../../stores/configStore";
 import { fixBook } from "../../utils/fixBook";
 import { MangaManager } from "../../utils/MangaManager";
 import { getB64 } from "../../utils/common";
+import { MangaDetail } from "../../types/ExtensionData";
 
 export default function BookDetailsPage() {
     const { config, setPageRoute } = useConfigStore();
@@ -43,22 +39,27 @@ export default function BookDetailsPage() {
 
         getDetail();
     }, [manga, config.installedSources]);
-    return (
-        <div className="p-8 w-full h-full text-primary-text overflow-y-auto">
-            <div className="flex items-start gap-10">
-                <div className="sticky top-0 shrink-0">
 
+    return (
+        <div className="p-4 sm:p-8 w-full h-full text-primary-text overflow-y-auto">
+
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-10">
+
+
+                <div className="shrink-0 sm:sticky sm:top-0">
                     <img
                         src={manga?.imageUrl}
                         alt={manga?.name}
-                        className="w-72 object-cover aspect-2/3 rounded-xl"
+                        className="w-44 sm:w-72 object-cover aspect-2/3 rounded-xl shadow-lg"
                     />
                 </div>
 
-                <div className="flex-1 min-w-0">
-                    <h1 className="text-5xl font-black tracking-tight">{manga?.name}</h1>
+                <div className="flex-1 min-w-0 w-full">
+                    <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-center sm:text-left">
+                        {manga?.name}
+                    </h1>
 
-                    <div className="flex flex-row flex-wrap w-full gap-2 mt-6 items-center">
+                    <div className="flex flex-row flex-wrap w-full gap-2 mt-4 sm:mt-6 items-center justify-center sm:justify-start">
                         {mangaDetail?.genre?.slice(0, genreExp ? undefined : 5).map((genre) => (
                             <div
                                 key={genre}
@@ -77,12 +78,19 @@ export default function BookDetailsPage() {
                             </button>
                         )}
                     </div>
-                    <button onClick={() => {
-                        MangaManager.setup(manga?.name, mangaDetail.description, mangaDetail.genre)
-                        MangaManager.saveCover(manga?.name, coverImg);
-                    }}> fuck you </button>
-                    <div className="mt-6 max-w-3xl">
-                        <div className={`text-md leading-relaxed text-primary-text/60 ${descriptionExp ? "" : "line-clamp-3"}`}>
+
+                    <button
+                        onClick={() => {
+                            MangaManager.setup(manga?.name, mangaDetail.description, mangaDetail.genre);
+                            MangaManager.saveCover(manga?.name, coverImg);
+                        }}
+                        className="hidden"
+                    >
+                        fuck you
+                    </button>
+
+                    <div className="mt-5 sm:mt-6 max-w-3xl">
+                        <div className={`text-sm sm:text-md leading-relaxed text-primary-text/60 ${descriptionExp ? "" : "line-clamp-3"}`}>
                             <ReactMarkdown
                                 components={{
                                     p: ({ node, ...props }) => <p className="mb-2" {...props} />,
@@ -103,43 +111,38 @@ export default function BookDetailsPage() {
                                 {descriptionExp ? "Read less" : "Read full description"}
                             </button>
                         )}
-
-
-
-
                     </div>
 
-                    <hr className="my-8 border-primary-text/5" />
+                    <hr className="my-6 sm:my-8 border-primary-text/5" />
 
                     <div className="mt-2">
-                        <h2 className="text-2xl font-bold mb-4">Chapters</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold mb-4">Chapters</h2>
                         <div className="grid grid-cols-1">
                             {mangaDetail.chapters?.map((chapter, index) => (
                                 <div
                                     key={index}
-                                    className="group flex items-center justify-between p-4 border-b border-primary-text/5 hover:bg-surface transition-all cursor-pointer active:bg-primary-text/10"
+                                    className="group flex items-center justify-between py-4 px-2 sm:p-4 border-b border-primary-text/5 hover:bg-surface active:bg-primary-text/10 transition-all cursor-pointer"
                                 >
-                                    <span onClick={() => {
-                                        console.log(manga?.getPageList(chapter.url))
-                                        // MangaManager.savePage(manga?.name, chapter.name, 1, "")
-                                    }}
-                                        className="font-medium text-primary-text/70 transition-all duration-200 flex flex-col">
-                                        {chapter.name}
-                                        <span className="text-sm text-primary-text/50 transition-all duration-200">
+                                    <span
+                                        onClick={() => {
+                                            console.log(manga?.getPageList(chapter.url));
+                                        }}
+                                        className="font-medium text-primary-text/70 transition-all duration-200 flex flex-col gap-0.5"
+                                    >
+                                        <span className="text-sm sm:text-base">{chapter.name}</span>
+                                        <span className="text-xs text-primary-text/50 transition-all duration-200">
                                             {`${(() => {
                                                 const date = new Date(+chapter.dateUpload);
-                                                return date.toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric'
+                                                return date.toLocaleDateString("en-US", {
+                                                    month: "short",
+                                                    day: "numeric",
+                                                    year: "numeric",
                                                 });
                                             })()}   •   ${chapter.scanlator}`}
                                         </span>
                                     </span>
 
-
-
-                                    <span className="text-xs font-bold text-primary-text/0 group-hover:text-primary-text/20 transition-all uppercase tracking-widest">
+                                    <span className="text-xs font-bold text-primary-text/20 sm:text-primary-text/0 sm:group-hover:text-primary-text/20 transition-all uppercase tracking-widest ml-4 shrink-0">
                                         Read
                                     </span>
                                 </div>
@@ -152,6 +155,6 @@ export default function BookDetailsPage() {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

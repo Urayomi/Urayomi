@@ -5,7 +5,6 @@ import {
     MagnifyingGlassIcon,
     Cog6ToothIcon,
     Bars3Icon,
-    ArrowDownOnSquareStackIcon,
     GlobeAltIcon
 } from "@heroicons/react/24/outline";
 import { useConfigStore } from "../../stores/configStore";
@@ -24,14 +23,17 @@ export default function Sidebar() {
 
     if (config.isMobile) {
         return (
-            <nav className="fixed bottom-0 left-0 right-0 h-14 bg-surface border-t border-white/10 z-40 flex items-center justify-around px-2">
+            <nav
+                className="fixed bottom-0 left-0 right-0 bg-surface border-t border-white/10 z-40 flex items-center justify-around px-2"
+                style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            >
                 {MENU_ITEMS.map((item) => {
                     const isActive = config.currentPage === item.href;
                     return (
                         <button
                             key={item.name}
                             onMouseUp={() => setConfig("currentPage", item.href as PageName)}
-                            className={`flex flex-col items-center justify-center gap-0.5 w-12 h-12 rounded-md ${isActive ? "text-accent" : "text-copy-light"}`}
+                            className={`flex flex-col items-center justify-center gap-0.5 w-12 h-14 rounded-md ${isActive ? "text-accent" : "text-copy-light"}`}
                         >
                             <item.icon className="w-5 h-5 shrink-0" />
                             <span className="text-[10px] whitespace-nowrap">{item.name}</span>
@@ -40,7 +42,7 @@ export default function Sidebar() {
                 })}
                 <button
                     onMouseUp={() => setConfig("currentPage", "settings")}
-                    className={`flex flex-col items-center justify-center gap-0.5 w-12 h-12 rounded-md ${config.currentPage === "settings" ? "text-accent" : "text-copy-light"}`}
+                    className={`flex flex-col items-center justify-center gap-0.5 w-12 h-14 rounded-md ${config.currentPage === "settings" ? "text-accent" : "text-copy-light"}`}
                 >
                     <Cog6ToothIcon className="w-5 h-5 shrink-0" />
                     <span className="text-[10px]">Settings</span>

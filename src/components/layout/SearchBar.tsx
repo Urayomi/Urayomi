@@ -37,7 +37,7 @@ export default function Searchbar({ layer = "background" }: { layer: string }) {
     return (
 
 
-        <div className={`w-full max-w-md`} >
+        <div className={`w-full md:max-w-md`} >
             <div className="relative group w-full">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
                     <MagnifyingGlassIcon className="w-3.5 h-3.5 text-gray-500 group-focus-within:text-accent/50 transition-colors" onClick={() => handleSearch()} />
