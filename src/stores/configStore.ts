@@ -10,6 +10,7 @@ const isMobile = current_platform === "ios" || current_platform === "android";
 export interface AppConfig {
     layout: {
         doublePanel: boolean;
+        rightToLeft: boolean;
     };
     theme: ThemeName;
     sources: SourceResponse[];
@@ -59,6 +60,7 @@ export const useConfigStore = create<ConfigStore>()(
             config: {
                 layout: {
                     doublePanel: !isMobile,
+                    rightToLeft: true,
                 },
                 isMobile: isMobile,
                 theme: 'system',

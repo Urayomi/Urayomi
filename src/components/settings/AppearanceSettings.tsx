@@ -31,6 +31,11 @@ export default function AppearanceSettings() {
                     console.log(config.layout)
                 }} checked={config.layout.doublePanel} />
 
+                <ToggleButton label="Right To Left" description="Show manga panels in a RTL layout" onChange={(val) => {
+                    setLayoutKey("rightToLeft", val);
+                    console.log(config.layout)
+                }} checked={config.layout.rightToLeft} />
+
             </div>
         </div>
     );

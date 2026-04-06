@@ -1,143 +1,170 @@
-import { useState, useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useConfigStore } from "../../../stores/configStore";
 import { MangaDetail } from "../../../types/ExtensionData";
-import { MangaManager } from "../../../utils/MangaManager";
-import { getB64 } from "../../../utils/common";
 import { fixBook } from "../../../utils/fixBook";
+import ProgressBar from "../ProgressBar";
+
+interface PageCache {
+    [chapterIndex: number]: string[];
+}
 
 export default function PageViewer() {
-    const { config, setPageRoute } = useConfigStore();
-    const [page, setPage] = useState(0)
-    const [chapterIndex, setChapterIndex] = useState(0)
+    const { config } = useConfigStore();
+    const [page, setPage] = useState(0);
+    const [chapterIndex, setChapterIndex] = useState(0);
     const [pages, setPages] = useState<string[]>([]);
+    const [pageCache, setPageCache] = useState<PageCache>({});
     const [mangaDetail, setMangaDetail] = useState({} as MangaDetail);
-    const mangaChapter = config.pageRoutes[config.currentPage].state;
-    const manga = mangaChapter.manga;
+    const [isLoading, setIsLoading] = useState(false);
+    const [displayImgs, setDisplayImgs] = useState<(string | null)[]>([]);
 
-    const touchStartX = useRef(0);
-    const touchEndX = useRef(0);
-    const SWIPE_THRESHOLD = 50;
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-        touchStartX.current = e.changedTouches[0].screenX;
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent) => {
-        touchEndX.current = e.changedTouches[0].screenX;
-        handleSwipe();
-    };
-
-    const handleSwipe = () => {
-        const difference = touchStartX.current - touchEndX.current;
-
-        if (difference > SWIPE_THRESHOLD) {
-            handleNextPage();
-        }
-        else if (difference < -SWIPE_THRESHOLD) {
-            handlePrevPage();
-        }
-    };
+    const mangaChapter = config.pageRoutes[config.currentPage]?.state;
+    const manga = mangaChapter?.manga;
 
     useEffect(() => {
+        if (!manga || !config.installedSources?.length) return;
         const getDetail = async () => {
-            if (!config.installedSources || config.installedSources.length === 0) return;
-
-            let detail: MangaDetail;
-
-            const fixedBook = await fixBook(manga, config);
-            if (fixedBook.getDetail) {
-                detail = await fixedBook.getDetail(fixedBook.link);
-            } else {
-                detail = fixedBook;
+            try {
+                const fixedBook = await fixBook(manga, config);
+                const detail = fixedBook.getDetail
+                    ? await fixedBook.getDetail(fixedBook.link)
+                    : fixedBook;
+                setMangaDetail(detail);
+            } catch (error) {
+                console.error("Error fetching manga detail:", error);
             }
-            setMangaDetail(detail);
-
         };
         getDetail();
-    }, [mangaChapter, config]);
+    }, [manga, config]);
 
     useEffect(() => {
-        console.log("mangaDetail:", mangaDetail);
-
-        const index = mangaDetail?.chapters?.findIndex(
-            (chapter) => chapter.name === mangaChapter.chapter.name
-        ) ?? 0;
-
-        console.log(index, mangaChapter.chapter.name);
-        setChapterIndex(index);
-    }, [mangaDetail]);
+        if (!mangaDetail?.chapters || !mangaChapter?.chapter) return;
+        const index = mangaDetail.chapters.findIndex(
+            (ch) => ch.name === mangaChapter.chapter.name
+        );
+        setChapterIndex(Math.max(0, index));
+    }, [mangaDetail, mangaChapter]);
 
     useEffect(() => {
+        if (!mangaChapter || !config.installedSources) return;
+
         const getPages = async () => {
-            const source = config.installedSources.find(
-                source => source.source.name === mangaChapter.manga.source
-            );
-            if (!source) return;
+            try {
+                setIsLoading(true);
+                const source = config.installedSources.find(
+                    (s) => s.source.name === mangaChapter.manga.source
+                );
+                if (!source) return;
 
-            const pageList = await source.getPageList(mangaChapter.chapter.url);
-            setPages(pageList);
-            setPage(0);
+                if (pageCache[chapterIndex]) {
+                    setPages(pageCache[chapterIndex]);
+                    setIsLoading(false);
+                    return;
+                }
+
+                const pageList = await source.getPageList(mangaChapter.chapter.url);
+                setPages(pageList);
+                setPageCache((prev) => ({ ...prev, [chapterIndex]: pageList }));
+                setPage(0);
+            } catch (error) {
+                console.error("Error fetching pages:", error);
+                setPages([]);
+            } finally {
+                setIsLoading(false);
+            }
         };
 
         getPages();
-    }, [mangaChapter, config.installedSources]);
+    }, [mangaChapter, config.installedSources, chapterIndex]);
 
-    const handleNextPage = async () => {
-        setPage(page + 2)
-    };
+    useEffect(() => {
+        if (!pages.length) return;
 
-    const handlePrevPage = () => {
-        if (page - 2 >= 0) {
-            setPage(page - 2);
+        const preloadCount = 3;
+        const newDisplayImgs: (string | null)[] = [...displayImgs];
+
+        const preloadImage = (src: string, index: number) => {
+            const img = new Image();
+            img.src = src;
+            img.decode?.().catch(() => { });
+            img.onload = () => {
+                setDisplayImgs((prev) => {
+                    const copy = [...prev];
+                    copy[index] = src;
+                    return copy;
+                });
+            };
+        };
+
+        for (let i = page; i <= page + preloadCount && i < pages.length; i++) {
+            if (!newDisplayImgs[i]) newDisplayImgs[i] = null;
+            preloadImage(pages[i], i);
         }
-    };
+        setDisplayImgs(newDisplayImgs);
+    }, [page, pages]);
+
+
+
+    const handleNextPage = useCallback(() => {
+        setPage((p) => p + (config.layout.doublePanel ? 2 : 1));
+    }, [config.layout.doublePanel]);
+
+    const handlePrevPage = useCallback(() => {
+        setPage((p) => p - (config.layout.doublePanel ? 2 : 1));
+    }, [config.layout.doublePanel]);
+
+    const isSinglePageLayout = config.layout.doublePanel;
+    const currentPageImg = displayImgs[page] || pages[page];
+    const nextPageImg = displayImgs[page + 1] || pages[page + 1];
 
     return (
-        <div
-            className="w-full h-full overflow-hidden flex flex-col"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-        >
-
-            <div className="flex-1 flex gap-2 sm:gap-4 p-4 sm:p-8 items-center justify-center overflow-hidden">
-                {config.layout.doublePanel ? (
+        <div className="w-full h-full overflow-hidden flex flex-col bg-background">
+            <div className={`flex-1 flex gap-2 ${config.layout.rightToLeft ? "flex-row-reverse" : ""} sm:gap-4 p-4 sm:p-8 items-center justify-center overflow-hidden bg-background`}>
+                {isSinglePageLayout ? (
                     <>
-                        {pages[page] && (
+                        {currentPageImg ? (
                             <img
-                                src={pages[page]}
-                                className="max-h-full max-w-1/2 object-contain cursor-pointer rounded"
-                                onClick={handleNextPage}
-                                alt="Current page"
-                            />
-                        )}
-
-                        {pages[page + 1] ? (
-                            <img
-                                src={pages[page + 1]}
-                                className="max-h-full max-w-1/2 object-contain cursor-pointer rounded"
-                                onClick={handlePrevPage}
-                                alt="Next page"
+                                src={currentPageImg}
+                                className="max-h-full max-w-1/2 object-contain cursor-pointer rounded-lg drop-shadow-2xl"
+                                onClick={config.layout.rightToLeft ? handlePrevPage : handleNextPage}
                             />
                         ) : (
-                            <div className="max-h-full w-full h-full max-w-1/2 flex items-center justify-center rounded bg-surface text-primary-text">
-                                {chapterIndex < mangaDetail.chapters?.length + 1
-                                    ? `Next: ${mangaDetail.chapters?.[chapterIndex - 1]?.name}`
-                                    : "No more chapters"}
+                            <div className="max-h-full max-w-1/2 flex items-center justify-center rounded-lg bg-neutral-900 text-neutral-500">
+                                <div className="text-center text-sm">No pages available</div>
+                            </div>
+                        )}
+
+                        {nextPageImg ? (
+                            <img
+                                src={nextPageImg}
+                                className="max-h-full max-w-1/2 object-contain cursor-pointer rounded-lg drop-shadow-2xl"
+                                onClick={config.layout.rightToLeft ? handleNextPage : handlePrevPage}
+                                alt={`Page ${page + 2}`}
+                            />
+                        ) : (
+                            <div className="max-h-full w-full max-w-1/2 flex items-center justify-center rounded-lg bg-neutral-900">
+                                <div className="text-center text-sm text-primary-text/50 mb-2">
+                                    Next Chapter
+                                </div>
                             </div>
                         )}
                     </>
                 ) : (
-                    pages[page] && (
-                        <img
-                            src={pages[page]}
-                            className="max-h-full max-w-full object-contain cursor-pointer rounded"
-                            onClick={handleNextPage}
-                            alt="Current page"
-                        />
-                    )
+                    <img
+                        src={currentPageImg}
+                        className="max-h-full max-w-full object-contain cursor-pointer rounded-lg drop-shadow-2xl"
+                        onClick={handleNextPage}
+                        alt={`Page ${page + 1}`}
+                    />
                 )}
+            </div>
 
+            <div className="bg-surface border-t border-background px-4 py-2 z-50">
+                <ProgressBar
+                    page={page}
+                    total={pages.length}
+                    onChange={setPage}
+                />
             </div>
         </div>
     );

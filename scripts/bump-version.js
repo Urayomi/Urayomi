@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const targetVersion = process.argv[2];
 
 if (!targetVersion) {
-    console.error('Usage: npm run bump <version>');
+    console.error('Usage: t <version>');
     console.error('Examples:');
     console.error('  npm run bump patch');
     console.error('  npm run bump minor');

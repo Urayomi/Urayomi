@@ -15,7 +15,7 @@ function App() {
   const { config, setConfig } = useConfigStore();
 
   useEffect(() => {
-    setConfig("isMobile", true); // this is for debug only, please remove on official release
+    // setConfig("isMobile", false); // this is for debug only, please remove on official release
 
     applyTheme(config.theme);
 
@@ -34,7 +34,7 @@ function App() {
   }, []);
 
   return (
-    <div className={`w-screen h-screen flex flex-row overflow-hidden relative bg-surface`}>
+    <div className={`w-screen ${"h-screen"} flex flex-row overflow-hidden relative bg-surface`}>
       {!config.isMobile && <Sidebar />}
 
       <div className={`flex-1 flex flex-col bg-surface overflow-hidden ${!config.isMobile && "ml-13"}`}>
