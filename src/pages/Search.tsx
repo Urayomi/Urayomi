@@ -12,7 +12,6 @@ export default function Search() {
 
     const [expandedSources, setExpandedSources] = useState<Record<string, boolean>>({});
 
-    // Update search results when location.state changes
     useEffect(() => {
         if (location.state?.results && location.state?.query) {
             updateConfig((config) => {
@@ -22,7 +21,6 @@ export default function Search() {
         }
     }, [location.state?.results, location.state?.query, updateConfig]);
 
-    // Reset expanded sources when results or query changes
     useEffect(() => {
         setExpandedSources({});
     }, [searchQuery, searchResults]);

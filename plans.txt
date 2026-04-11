@@ -3,8 +3,9 @@ High priority --
 Implement a complete source system - Likely aidoku or mangayomi sources (THIS SHIT IS FUCKED UP I AM NOT GONNA FINISH PLS)
 Allow saving manga
 Implementing an actual reader ✅
-More settings 
+More settings
 Catagories
+Smoothing out the code so scaling is easier
 
 Low priority --
 
