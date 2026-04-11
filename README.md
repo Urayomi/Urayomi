@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="https://img.shields.io/github/stars/Urayomi/Urayomi?style=for-the-badge&label=Stars" />
+  <img src="https://img.shields.io/github/v/release/Urayomi/Urayomi?style=for-the-badge&label=Release" />
+  <img src="https://img.shields.io/github/downloads/Urayomi/Urayomi/total?style=for-the-badge&label=Downloads" />
+  <a href="https://discord.gg/MXzbuWZ3wn">
+    <img src="https://img.shields.io/badge/discord-join%20server-5865F2?style=for-the-badge&logo=discord" />
+  </a>
+</p>
 # Urayomi
 **Urayomi** is an open-source manga reader that supports every device, from desktop to mobile.  
 ## Showcase
