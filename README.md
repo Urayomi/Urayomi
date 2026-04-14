@@ -2,6 +2,8 @@
   <img src="https://img.shields.io/github/stars/Urayomi/Urayomi?style=for-the-badge&label=Stars" />
   <img src="https://img.shields.io/github/v/release/Urayomi/Urayomi?style=for-the-badge&label=Release" />
   <img src="https://img.shields.io/github/downloads/Urayomi/Urayomi/total?style=for-the-badge&label=Downloads" />
+  <img src="https://img.shields.io/github/license/Urayomi/Urayomi?style=for-the-badge&label=License" />
+
   <a href="https://discord.gg/MXzbuWZ3wn">
     <img src="https://img.shields.io/badge/discord-join%20server-5865F2?style=for-the-badge&logo=discord" />
   </a>
@@ -17,35 +19,66 @@
   <img src="showcase/reading.png" alt="Reading Mode" width="45%">
 </div>
 
+---
+
+## Features
+
+- Cross-platform support (desktop + mobile)
+- Extension-based content system
+- Customizable reading experience
+- Lightweight and fast UI
+<!-- - Sync-ready architecture (future-proofed) -->
+<!-- - Offline reading support -->
+
+---
+
+## Roadmap
+
+- UI refactor and performance improvements
+- Extension system hardening
+- Cloud sync support
+- Bookmark and progress tracking improvements
+- Plugin API stabilization
+
+---
+
 ## Supporting 
 
-*Please support this project by giving it a star*
+If you find this project useful, consider starring the repository. It helps visibility and development motivation.
 
+## Platforms
 
-## Available Platforms
-
-| OS       | Current Status                                | Working? |
-|----------|-----------------------------------------------|----------|
-| **Windows** | Fully supported with all features.           | ✅ Yes   |
-| **macOS**   | Fully supported with all features.           | ✅ Yes   |
-| **Linux**   | Fully supported with all features.           | ✅ Yes   |
-| **Android** | Fully supported with all features.           | ✅ Yes   |
-| **iOS**     | Fully supported with all features.           | ✅ Yes   |
+| Platform | Status | Notes |
+|----------|--------|-------|
+| Windows  | Supported | Full feature set |
+| macOS    | Supported | Full feature set |
+| Linux    | Supported | Full feature set |
+| Android  | Supported | Full feature set |
+| iOS      | Supported | Full feature set |
 
 ## Versioning
-Versions below **v0.5.4** may have unexpected **(theyre very expected)** bugs, like forcing mobile mode on desktop (oops).  
+- Codebase is currently undergoing restructuring
+- Some legacy behavior may remain in older builds
+- API stability is not guaranteed before v1.0.0 
+
+---
 
 ## Sources
 extensions are available here: [Urayomi-Extensions GitHub](https://github.com/De1p0/Urayomi-Extensions)  
 
+---
+
 ## Contributing
 Yes I know the code is messy, I'm planning to refactor everything in newer updates, if you would like to add contribute please join the discord  
 
+---
 
 ## Credits
 This project was inspired by:  
 - [Mangayomi](https://github.com/kodjodevf/mangayomi)  
 - [Aidoku](https://github.com/Aidoku/Aidoku)  
+
+---
 
 ## Stats
 <img src="https://count.getloli.com/@urayomi?name=urayomi&theme=original-old" alt="Visitor Count" />  

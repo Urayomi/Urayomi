@@ -42,9 +42,6 @@ export default function Browse() {
         console.log("Installing source", sourceItem)
     };
 
-    useEffect(() => {
-        console.log("REGISTRY UPDATE:", sources);
-    }, [sources]);
 
     return (
         <div className="w-full h-full p-4 sm:p-8 overflow-hidden">
