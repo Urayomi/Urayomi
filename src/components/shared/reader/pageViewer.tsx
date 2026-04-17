@@ -6,6 +6,7 @@ import { useSourceRegistry } from "../../../stores/SourceStore";
 
 export default function PageViewer() {
     const [pages, setPages] = useState<string[]>([]);
+    const [pagesLoaded, setPagesLoaded] = useState(false);
     const { config, updateConfig } = useConfigStore();
     const { sources } = useSourceRegistry();
 
@@ -18,7 +19,7 @@ export default function PageViewer() {
     const manga = state?.manga;
 
     const isLoaded =
-        pages.length > 0 && page > -2;
+        pages.length > 0 && page > -2 && pagesLoaded;
 
     const setPage = (newPage: number) => {
         if (!isLoaded) return;
@@ -88,6 +89,7 @@ export default function PageViewer() {
 
         if (!chapter || !manga) return;
 
+        setPagesLoaded(false);
 
         const getPages = async () => {
             if (manga.source == "Local") {
@@ -117,7 +119,7 @@ export default function PageViewer() {
                     }
                 });
 
-
+                setPagesLoaded(true);
                 return
             }
 
@@ -151,6 +153,7 @@ export default function PageViewer() {
                 }
             });
 
+            setPagesLoaded(true);
         };
 
 
@@ -190,15 +193,15 @@ export default function PageViewer() {
 
     const isDouble = config.layout.doublePanel;
 
-    const currentPageImg = pages[page] || "";
-    const nextPageImg = pages[page] || "";
+    const currentPageImg = pagesLoaded ? pages[page] || "" : "";
+    const nextPageImg = pagesLoaded ? pages[page + 1] || "" : "";
     const chapterList = state?.chapterList;
 
     return (
         <div className="w-full h-full relative overflow-hidden flex flex-col bg-background">
 
 
-            <div className="flex flex-1 bg-surface overflow-auto">
+            <div className="flex flex-1 bg-background overflow-auto">
                 <div
 
                     className={`flex flex-1 gap-2 ${config.layout.rightToLeft ? "flex-row-reverse" : ""
@@ -253,7 +256,7 @@ export default function PageViewer() {
                             </span>
                         </span>
 
-                    </div> :
+                    </div > :
 
 
                         isDouble ? (

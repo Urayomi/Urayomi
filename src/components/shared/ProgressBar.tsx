@@ -19,7 +19,7 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
 
     const displayPercentage = useMemo(() => {
         if (isDragging && dragVisualPct !== null) return dragVisualPct * 100;
-        if (total <= 1) return 0;
+        if (total < 1) return 0;
         return ((page / (total - 1)) * 100);
     }, [isDragging, dragVisualPct, page, total]);
 
@@ -76,7 +76,13 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
         };
     }, [isDragging, handleUpdate]);
 
+
     let displayFix = Math.min(100, Math.max(0, displayPercentage))
+
+    useEffect(() => {
+        console.log(page, total, displayFix, displayPercentage)
+    }, [page])
+
 
     return (
         <div className="w-full select-none py-2 px-4 space-y-1">
