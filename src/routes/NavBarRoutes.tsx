@@ -1,14 +1,8 @@
-import React from "react";
-import BookDetailsPage from "../components/shared/BookDetails";
-import Browse from "../pages/Browse";
-import Library from "../pages/Library";
-import Search from "../pages/Search";
-import Settings from "../pages/Settings";
+
 import { useConfigStore } from "../stores/configStore";
-import { AppConfig, ConfigStore } from "../types/Config";
 import Searchbar from "../components/layout/SearchBar";
 
-// put components here and move to files later
+// put components here and move to files later                   
 
 export function ChapterTitle() {
     const { config } = useConfigStore();
@@ -18,10 +12,9 @@ export function ChapterTitle() {
     //         className="px-4 py-1.5 bg-surface/50 border border-primary-text/10 truncate max-w-1/4 rounded text-xs font-semibold"
     //         title={chapter?.name}
     //     >
-    //         {chapter?.name || "Loading..."}
+    //         {chapter?.name || "Loading..."}        
     //     </span>
     // </div>
-    let chapterName = config.pageRoutes[config.currentPage].pageMangaState.chapter?.currentChapter?.name;
 
     return (<div className="bg-surface/50 px-4 flex flex-col items-center rounded font-black">
         <span className="text-xs ">

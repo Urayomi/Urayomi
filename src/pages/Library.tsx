@@ -3,25 +3,47 @@ import { useState, useEffect } from "react";
 import Book from "../components/shared/Book";
 import { useConfigStore } from "../stores/configStore";
 import { useFixBook } from "../utils/fixBook";
-import { Manga } from "../types/Manga";
+import { LibraryManga, Manga } from "../types/Manga";
 import { useSourceRegistry } from "../stores/SourceStore";
 
 export default function Library() {
-    const [open, setOpen] = useState(false);
-    const [filter, setFilter] = useState("All");
+    // const [open, setOpen] = useState(false);
+    // const [filter, setFilter] = useState("All");
     const [books, setBooks] = useState<Manga[]>([]);
-    const { config } = useConfigStore();
     const { sources } = useSourceRegistry();
     const fixBook = useFixBook();
 
-    const library = [
+    const library: LibraryManga[] = [
         {
             name: "RuriDragon",
             imageUrl: "https://uploads.mangadex.org/covers/141609b6-cf86-4266-904c-6648f389cdc9/216d1ce9-2195-4ad3-9502-be95b06a3502.jpg",
             link: "/manga/141609b6-cf86-4266-904c-6648f389cdc9",
             source: "MangaDex"
+        },
+        {
+            name: "Local Test",
+            imageUrl: "",
+            source: "Local",
+            chapters: [
+                {
+                    name: "part 2",
+                    url: "asd",
+                    scanlator: "hell",
+                    dateUpload: "123"
+                },
+                {
+                    name: "part 1",
+                    url: "asd",
+                    scanlator: "Depths",
+                    dateUpload: "123"
+                }
+            ]
         }
     ];
+
+
+
+
 
     useEffect(() => {
         async function fetchBooks() {
@@ -42,7 +64,7 @@ export default function Library() {
         <div className="w-full h-full p-8">
             <div className="flex items-center justify-between mb-5">
                 <h1 className="text-2xl font-bold text-primary-text tracking-tight">Library</h1>
-                <div className="relative">
+                {/* <div className="relative">
                     <div
                         onClick={() => setOpen(!open)}
                         className="flex items-center gap-1 px-3 py-1 cursor-pointer hover:bg-primary-text/5 rounded transition-colors"
@@ -64,7 +86,7 @@ export default function Library() {
                                         className={`px-4 py-2 text-[11px] cursor-pointer transition-colors ${filter === f
                                             ? "bg-primary-text/20 text-primary-text"
                                             : "text-primary-text hover:bg-primary-text/10 hover:text-primary-text/80"
-                                            }`}
+                                            }`}                                                
                                     >
                                         {f}
                                     </div>
@@ -72,7 +94,7 @@ export default function Library() {
                             </div>
                         </>
                     )}
-                </div>
+                </div> */}
             </div>
 
             <div className="overflow-y-auto flex flex-wrap gap-5 content-start">

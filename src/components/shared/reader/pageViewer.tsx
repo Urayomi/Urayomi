@@ -9,6 +9,7 @@ export default function PageViewer() {
     const { config, updateConfig } = useConfigStore();
     const { sources } = useSourceRegistry();
 
+
     const state = config.pageRoutes[config.currentPage].pageMangaState;
 
     const page = state.currentPage || 0;
@@ -17,7 +18,7 @@ export default function PageViewer() {
     const manga = state?.manga;
 
     const isLoaded =
-        pages.length > 0 && page > -1;
+        pages.length > 0 && page > -2;
 
     const setPage = (newPage: number) => {
         if (!isLoaded) return;
@@ -27,45 +28,135 @@ export default function PageViewer() {
         });
     };
 
+
+    function updatePage(index: number, fwd: boolean) {
+        const chapterList = state?.chapterList;
+        if (!chapterList) return;
+
+        updateConfig((config) => {
+            const pageState =
+                config.pageRoutes[config.currentPage].pageMangaState;
+            const chapter = chapterList[index];
+            pageState.chapter ??= {
+                currentChapter: chapter,
+                currentPage: 0,
+                pageList: [],
+                pages: 0,
+            };
+
+            const isLastPage = page >= pages.length;
+            const increment = config.layout.doublePanel ? 2 : 1;
+            if (!isLastPage && fwd) {
+                pageState.currentPage = (pageState.currentPage ?? 0) + increment;
+                return;
+            }
+
+            if (isLastPage && fwd) {
+                pageState.chapter.currentChapter = chapterList[index - 1];
+                pageState.currentPage = 0;
+
+                console.log(pageState.chapter.currentChapter)
+                return;
+            }
+
+            const decrement = config.layout.doublePanel ? 2 : 1;
+            const current = pageState.currentPage ?? 0;
+
+            if (current > 0) {
+                pageState.currentPage = Math.max(0, current - decrement);
+                return;
+            }
+
+
+            if (index >= chapterList.length + 2) return;
+
+
+            if (pageState.currentPage == -1) {
+                pageState.currentPage = -2;
+                pageState.chapter.currentChapter = chapterList[index + 1];
+
+            } else pageState.currentPage = -1
+
+            console.log(index, chapterList.length, pageState.currentPage)
+
+        });
+    }
+
+
+
     useEffect(() => {
-        if (!chapter || !manga || !sources || Object.keys(sources).length === 0) return;
+
+        if (!chapter || !manga) return;
 
 
         const getPages = async () => {
-            const source = Object.values(sources).find(
-                (s) => s.source.name === manga.source
-            );
-            if (!source) return;
-
-            try {
-                const pageList = await source.getPageList(chapter.url);
-                setPages(pageList);
+            if (manga.source == "Local") {
+                console.log("manga source is local")
 
                 updateConfig((config) => {
                     const pageState =
                         config.pageRoutes[config.currentPage].pageMangaState;
 
+                    console.log(pageState.currentPage, "ni")
+
+
                     pageState.chapter ??= {
                         currentChapter: chapter,
                         currentPage: 0,
                         pageList: [],
-                        pages: 0,
+                        pages: 11,
                     };
 
-                    pageState.chapter.pageList = pageList;
-                    pageState.chapter.pages = pageList.length;
+                    pageState.chapter.pageList = ["fah", "fah", "fah", "fah", "fah", "fah", "fah"];
+                    pageState.chapter.pages = pageState.chapter.pageList.length;
+                    setPages([...pageState.chapter.pageList])
 
-                    if (pageState.currentPage === -1) {
-                        pageState.currentPage = Math.max(0, pageList.length - 1);
+
+                    if (pageState.currentPage === -2) {
+                        pageState.currentPage = Math.max(0, pageState.chapter.pageList.length - 1);
                     }
                 });
-            } catch (e) {
-                console.error(e);
+
+
+                return
             }
+
+
+            const source = Object.values(sources).find(
+                (s) => s.source.name === manga.source
+            );
+            if (!source) return;
+
+            console.log(chapter)
+
+            const pageList = await source.getPageList(chapter.url);
+            setPages(pageList);
+
+            updateConfig((config) => {
+                const pageState =
+                    config.pageRoutes[config.currentPage].pageMangaState;
+
+                pageState.chapter ??= {
+                    currentChapter: chapter,
+                    currentPage: 0,
+                    pageList: [],
+                    pages: 0,
+                };
+
+                pageState.chapter.pageList = pageList;
+                pageState.chapter.pages = pageList.length;
+
+                if (pageState.currentPage === -2) {
+                    pageState.currentPage = Math.max(0, pageList.length - 1);
+                }
+            });
+
         };
 
+
+
         getPages();
-    }, [chapter?.url, manga, sources, updateConfig]);
+    }, [chapter?.url, manga, sources, updateConfig, page]);
 
     const handleNextPage = useCallback(() => {
         if (!isLoaded) return;
@@ -76,35 +167,10 @@ export default function PageViewer() {
         const index = chapterList.findIndex(
             (ch) => ch.name === chapter.name
         );
-        if (index === -1) return;
+        if (index === -2) return;
 
-        const isLastPage = page >= pages.length - 1;
-        const increment = config.layout.doublePanel ? 2 : 1;
+        updatePage(index, true)
 
-        updateConfig((config) => {
-            const pageState =
-                config.pageRoutes[config.currentPage].pageMangaState;
-
-            if (!isLastPage) {
-                pageState.currentPage = (pageState.currentPage ?? 0) + increment;
-                return;
-            }
-
-            const nextIndex = index - 1;
-            if (nextIndex < 0) return;
-
-            const nextChapter = chapterList[nextIndex];
-
-            pageState.chapter ??= {
-                currentChapter: nextChapter,
-                currentPage: 0,
-                pageList: [],
-                pages: 0,
-            };
-
-            pageState.chapter.currentChapter = nextChapter;
-            pageState.currentPage = 0;
-        });
     }, [isLoaded, state, page, pages.length, config.layout.doublePanel, updateConfig]);
 
     const handlePrevPage = useCallback(() => {
@@ -116,41 +182,17 @@ export default function PageViewer() {
         const index = chapterList.findIndex(
             (ch) => ch.name === chapter.name
         );
-        if (index === -1) return;
+        if (index === -2) return;
 
-        updateConfig((config) => {
-            const pageState =
-                config.pageRoutes[config.currentPage].pageMangaState;
 
-            const decrement = config.layout.doublePanel ? 2 : 1;
-            const current = pageState.currentPage ?? 0;
-
-            if (current > 0) {
-                pageState.currentPage = Math.max(0, current - decrement);
-                return;
-            }
-
-            const prevIndex = index + 1;
-            if (prevIndex >= chapterList.length) return;
-
-            const prevChapter = chapterList[prevIndex];
-
-            pageState.chapter ??= {
-                currentChapter: prevChapter,
-                currentPage: -1,
-                pageList: [],
-                pages: 0,
-            };
-
-            pageState.chapter.currentChapter = prevChapter;
-            pageState.currentPage = -1;
-        });
+        updatePage(index, false)
     }, [isLoaded, state, updateConfig, config.layout.doublePanel]);
 
     const isDouble = config.layout.doublePanel;
 
     const currentPageImg = pages[page] || "";
-    const nextPageImg = pages[page + 1] || "";
+    const nextPageImg = pages[page] || "";
+    const chapterList = state?.chapterList;
 
     return (
         <div className="w-full h-full relative overflow-hidden flex flex-col bg-background">
@@ -176,33 +218,71 @@ export default function PageViewer() {
                         }
                     }}
                 >
-                    {isDouble ? (
-                        <>
+                    {pages.length <= page || page == -1 ? <div
+                        className={`max-h-full max-w-1/2 flex flex-col rounded-lg select-none text-primary-text gap-2`}
+                    >
+
+                        <span className="flex flex-col">
+                            <strong>{page == -1 ? "Previous" : "Finished"}:</strong>
+
+                            <span className="text-primary-text/70">
+                                {(() => {
+
+                                    if (page != -1) return chapter?.name
+                                    if (!chapterList) return "";
+                                    const index = chapterList?.findIndex(
+                                        (ch) => ch.name === chapter?.name
+                                    );
+                                    return chapterList[index + 1]?.name
+                                })()}
+                            </span>
+                        </span>
+
+                        <span className="flex flex-col">
+                            <strong>{page == -1 ? "Current" : "Next"}:</strong>
+
+                            <span className="text-primary-text/70">
+                                {(() => {
+                                    if (page == -1) return chapter?.name;
+                                    if (!chapterList) return "";
+                                    const index = chapterList?.findIndex(
+                                        (ch) => ch.name === chapter?.name
+                                    );
+                                    return chapterList[index - 1]?.name
+                                })()}
+                            </span>
+                        </span>
+
+                    </div> :
+
+
+                        isDouble ? (
+                            <>
+                                <MangaPage
+                                    src={currentPageImg}
+                                    alt={`Page ${page + 1}`}
+                                    half
+                                />
+                                {nextPageImg && (
+                                    <MangaPage
+                                        src={nextPageImg}
+                                        alt={`Page ${page + 2}`}
+                                        half
+                                    />
+                                )}
+                            </>
+                        ) : (
                             <MangaPage
                                 src={currentPageImg}
                                 alt={`Page ${page + 1}`}
-                                half
                             />
-                            {nextPageImg && (
-                                <MangaPage
-                                    src={nextPageImg}
-                                    alt={`Page ${page + 2}`}
-                                    half
-                                />
-                            )}
-                        </>
-                    ) : (
-                        <MangaPage
-                            src={currentPageImg}
-                            alt={`Page ${page + 1}`}
-                        />
-                    )}
+                        )}
                 </div>
-            </div>
+            </div >
 
             <div className="bg-surface px-4">
                 <ProgressBar
-                    page={page === -1 ? 0 : page}
+                    page={page === -2 ? 0 : page}
                     total={pages.length}
                     onChange={(p) => {
                         if (!isLoaded) return;
@@ -210,6 +290,6 @@ export default function PageViewer() {
                     }}
                 />
             </div>
-        </div>
+        </div >
     );
 }

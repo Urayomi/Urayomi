@@ -1,8 +1,6 @@
-import { useState } from "react";
 import AppearanceSettings from "../components/settings/AppearanceSettings";
 import DownloadsSettings from "../components/settings/DownloadSettings";
 import ExtensionsSettings from "../components/settings/ExtensionSettings";
-import ToggleButton from "../components/shared/ToggleButton";
 
 export default function Settings() {
     return (

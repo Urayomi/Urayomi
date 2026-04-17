@@ -20,7 +20,7 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
     const displayPercentage = useMemo(() => {
         if (isDragging && dragVisualPct !== null) return dragVisualPct * 100;
         if (total <= 1) return 0;
-        return (page / (total - 1)) * 100;
+        return ((page / (total - 1)) * 100);
     }, [isDragging, dragVisualPct, page, total]);
 
     const activePageNum = useMemo(() => {
@@ -76,6 +76,8 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
         };
     }, [isDragging, handleUpdate]);
 
+    let displayFix = Math.min(100, Math.max(0, displayPercentage))
+
     return (
         <div className="w-full select-none py-2 px-4 space-y-1">
             <div className="flex items-center gap-4">
@@ -104,7 +106,7 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
                         className={`absolute h-1 bg-accent rounded-full pointer-events-none ${isDragging ? "" : "transition-[width] ease-out duration-100"
                             }`}
                         style={{
-                            width: `${displayPercentage}%`,
+                            width: `${displayFix}%`,
                             [isRTL ? 'right' : 'left']: 0
                         }}
                     />
@@ -114,8 +116,8 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
                             className="absolute -top-7 z-50 pointer-events-none transition-opacity duration-100"
                             style={{
                                 left: isRTL
-                                    ? `${100 - (isDragging ? displayPercentage : hoverPct! * 100)}%`
-                                    : `${isDragging ? displayPercentage : hoverPct! * 100}%`,
+                                    ? `${100 - (isDragging ? displayFix : hoverPct! * 100)}%`
+                                    : `${isDragging ? displayFix : hoverPct! * 100}%`,
                                 transform: 'translateX(-50%)'
                             }}
                         >
@@ -129,7 +131,7 @@ export default function ProgressBar({ page, total, onChange }: ProgressBarProps)
                         className={`absolute w-3 h-3 bg-white rounded-full shadow-md pointer-events-none ${isDragging ? "scale-125" : "scale-100 group-hover:scale-110 duration-100"
                             }`}
                         style={{
-                            [isRTL ? 'right' : 'left']: `${displayPercentage}%`,
+                            [isRTL ? 'right' : 'left']: `${displayFix}%`,
                             transform: isRTL ? 'translateX(50%)' : 'translateX(-50%)'
                         }}
                     />

@@ -9,12 +9,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { useConfigStore } from '../../stores/configStore';
 import Searchbar from './SearchBar';
-import NavBarRoutes from "../../routes/NavBarRoutes";
+import React from 'react';
+const NavBarRoutes = React.lazy(() => import("../../routes/NavBarRoutes"))
 
 export default function TitleBar() {
      const [isMaximized, setIsMaximized] = useState(false);
      const appWindow = useMemo(() => getCurrentWindow(), []);
-     const { config, updateConfig } = useConfigStore();
+     const { updateConfig } = useConfigStore();
 
      useEffect(() => {
           const syncState = async () => setIsMaximized(await appWindow.isMaximized());

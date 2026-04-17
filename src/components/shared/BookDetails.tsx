@@ -6,7 +6,6 @@ import { MangaDetail } from "../../types/Manga";
 import { useSourceRegistry } from "../../stores/SourceStore";
 
 
-// gotta fix why getting detail not wokring
 export default function BookDetailsPage() {
     const { config, setPage, updateConfig } = useConfigStore();
     const { sources } = useSourceRegistry();
@@ -27,10 +26,8 @@ export default function BookDetailsPage() {
                 setMangaDetail(detail);
             } else {
                 const fixedBook = await fixBook(manga);
-                console.log(fixedBook)
                 if (fixedBook.getDetail) {
                     const detail = await fixedBook.getDetail(fixedBook.link);
-                    console.log(detail, " detail")
                     setMangaDetail(detail);
                 } else {
                     setMangaDetail(fixedBook);
@@ -44,12 +41,8 @@ export default function BookDetailsPage() {
 
     useEffect(() => {
         updateConfig((config) => {
-
-
-            console.log(mangaDetail)
             config.pageRoutes[config.currentPage].pageMangaState.chapterList = mangaDetail.chapters;
-            console.log(config.pageRoutes[config.currentPage].pageMangaState.chapterList, " Chapter list")
-
+            console.log(config.pageRoutes[config.currentPage].pageMangaState.chapterList, " Chapter list");
             config.pageRoutes[config.currentPage].pageMangaState.manga = manga;
         })
     }, [mangaDetail])
@@ -140,13 +133,13 @@ export default function BookDetailsPage() {
                                         updateConfig((config) => {
                                             // config.pageRoutes[config.currentPage].pageMangaState.chapter.currentChapter = chapter;
                                             const page = config.pageRoutes[config.currentPage];
+                                            console.log("so get away ", page.pageMangaState.chapter)
+                                            console.log(chapter)
+                                            page.pageMangaState.chapter ??= {};
+                                            page.pageMangaState.manga = manga;
 
-                                            if (page.pageMangaState.chapter) {
-                                                page.pageMangaState.manga = manga;
-                                                page.pageMangaState.chapter.currentChapter = chapter;
+                                            page.pageMangaState.chapter.currentChapter = chapter;
 
-
-                                            }
                                         })
                                         updateConfig((config) => {
                                             const pageState =
@@ -154,7 +147,6 @@ export default function BookDetailsPage() {
                                             pageState.currentPage = 0;
 
                                         })
-                                        console.log({ chapter, manga });
                                     }}
                                     className="group flex items-center justify-between py-4 px-2 sm:p-4 border-b border-primary-text/5 hover:bg-surface active:bg-surface transition-all cursor-pointer"
                                 >

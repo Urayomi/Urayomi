@@ -3,19 +3,18 @@ import "./App.css";
 import "./stores/themes/themes.css";
 import TitleBar from "./components/layout/TitleBar";
 import Sidebar from "./components/layout/SideBar";
-import AppRoutes from "./routes/AppRoutes";
-import "./ExtensionHandler/SourceLoader"
-import { getSourceList, loadSource } from "./ExtensionHandler/SourceLoader";
-import { useEffect } from "react";
-import { corFetch } from "./coreFetch";
+import "./core/Sources/SourceLoader"
+import React, { useEffect } from "react";
 import { applyTheme, useConfigStore } from "./stores/configStore";
+import { corFetch } from "./api/corFetch";
+import { loadSource } from "./core/Sources/SourceLoader";
 import { useSourceRegistry } from "./stores/SourceStore";
-
+const AppRoutes = React.lazy(() => import("./routes/AppRoutes"))
 function App() {
-  const { config, updateConfig } = useConfigStore();
+  const { config } = useConfigStore();
   const { setSource } = useSourceRegistry();
+
   useEffect(() => {
-    // setConfig("isMobile", false); // this is for debug only, please remove on official release
 
     applyTheme(config.theme);
 
@@ -31,15 +30,13 @@ function App() {
         setSource(source.source.name, source)
         console.log(source, "Shit");
       })
-
-
     };
 
     handleExtensionLoad();
-  }, []);
+  }, [])
 
   return (
-    <div className={`w-screen ${"h-screen"} flex flex-row overflow-hidden relative bg-surface`}>
+    <div className={`w-screen h-screen flex flex-row overflow-hidden relative bg-surface`}>
       {!config.isMobile && <Sidebar />}
 
       <div className={`flex-1 flex flex-col bg-surface overflow-hidden ${!config.isMobile && "ml-13"}`}>

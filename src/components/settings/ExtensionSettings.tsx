@@ -1,9 +1,9 @@
 import { PuzzlePieceIcon } from "@heroicons/react/24/outline";
 import { useConfigStore } from "../../stores/configStore";
-import { getSourceList } from "../../ExtensionHandler/SourceLoader";
+import { getSourceList } from "../../core/Sources/SourceLoader";
 import { useEffect, useState } from "react";
-import { loadSource } from "../../ExtensionHandler/SourceLoader";
-import { corFetch } from "../../coreFetch";
+import { loadSource } from "../../core/Sources/SourceLoader";
+import { corFetch } from "../../api/corFetch";
 import { useSourceRegistry } from "../../stores/SourceStore";
 
 export default function ExtensionsSettings() {

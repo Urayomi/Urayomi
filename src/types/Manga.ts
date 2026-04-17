@@ -23,3 +23,11 @@ export interface MangaDetail {
     chapters: Chapter[];
     imageUrl?: string;
 }
+
+export interface LibraryManga {
+    name: string,
+    imageUrl: string,
+    link?: string,
+    source: string,
+    chapters?: Chapter[]
+}
