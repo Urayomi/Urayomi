@@ -22,7 +22,7 @@
 ---
 
 ## Features
-
+### Please note that only search has these features and i am extending them onto everything else 
 - [x] Cross-platform support (desktop + mobile)
 - [x] Extension-based content system
 - [x] Customizable reading experience
