@@ -7,7 +7,7 @@ More settings
 Catagories
 Smoothing out the code so scaling is easier
 Light Novel Support
-
+Switching extension system, remaking
 
 Low priority --
 
