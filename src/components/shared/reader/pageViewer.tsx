@@ -55,7 +55,6 @@ export default function PageViewer() {
                 pageState.chapter.currentChapter = chapterList[index - 1];
                 pageState.currentPage = 0;
 
-                console.log(pageState.chapter.currentChapter)
                 return;
             }
 

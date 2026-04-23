@@ -3,7 +3,8 @@ High priority --
 Implement a complete source system - Likely aidoku or mangayomi sources (THIS SHIT IS FUCKED UP I AM NOT GONNA FINISH PLS)
 Allow saving manga
 Implementing an actual reader ✅
-More settings
+More settings               
+Library System ✅
 Catagories
 Smoothing out the code so scaling is easier
 Light Novel Support
@@ -13,4 +14,4 @@ Low priority --
 
 Implement a theming system ✅
 Downloading manga
-Importing local manga
+Importing local manga               
