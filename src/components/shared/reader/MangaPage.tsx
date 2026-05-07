@@ -33,6 +33,8 @@ export function MangaPage({
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="spinner" />
+
+
                 </div>
             )}
 
