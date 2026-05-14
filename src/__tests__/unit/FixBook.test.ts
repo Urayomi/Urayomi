@@ -42,7 +42,7 @@ test('should fix book with valid source', async () => {
     expect(typeof result.getDetail).toBe('function');
     expect(detailResult.genre[0]).toBe("Action");
     expect(detailResult.status).toBe(0)
-    expect(result.g
+
     expect(result.name).toBe('Test Manga');
     expect(result.imageUrl).toBe('https://example.com/image.jpg');
 });
