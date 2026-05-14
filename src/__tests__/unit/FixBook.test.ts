@@ -35,7 +35,7 @@ test('should fix book with valid source', async () => {
 
     const result = await fixBook(book, { mangadex: mockSource });
 
-    let detailResult = result.getDetail()
+    let detailResult = await result.getDetail()
 
     expect(result.source).toBe('mangadex');
     expect(result.getDetail).toBeDefined();
