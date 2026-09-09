@@ -2,6 +2,7 @@
 	import { Bookmark, Clock, Menu, Search, Settings } from "@lucide/svelte";
 	import Seperator from "./common/seperator.svelte";
 	import FillSpace from "./common/fill_space.svelte";
+	import Button from "./common/button.svelte";
 </script>
 
 <div
@@ -24,16 +25,19 @@
 
 	<Seperator />
 
-	<div class="gap-5 flex flex-col">
-		<Bookmark strokeWidth={1.5} />
+	<div class="gap-3 flex flex-col">
+		<!-- <Bookmark strokeWidth={1.5} />
 		<Clock strokeWidth={1.5} />
-		<Search strokeWidth={1.5} />
+		<Search strokeWidth={1.5} /> -->
+		<Button Text={Bookmark} />
+		<Button Text={Clock} />
+		<Button Text={Search} />
 	</div>
 
 	<FillSpace />
 	<Seperator />
 
 	<div class="gap-5 flex flex-col mb-2">
-		<Settings strokeWidth={1.5} />
+		<Button Text={Settings} />
 	</div>
 </div>
