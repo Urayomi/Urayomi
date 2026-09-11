@@ -4,14 +4,14 @@
 	import Seperator from "./common/seperator.svelte";
 	import FillSpace from "./common/fill_space.svelte";
 	import Button from "./common/button.svelte";
-
+	import CenterHorizontal from "./common/center_horizontal.svelte";
 	let expand = $state(false);
 </script>
 
 <div
 	class="
         h-full bg-surface flex flex-col pt-2
-        text-primary-text/90 gap-5
+        text-primary-text/90 gap-5 font-sans
         overflow-hidden pl-2
         transition-[width] duration-300 ease-in-out
         {expand ? 'w-48' : 'w-12'}
@@ -34,7 +34,7 @@
 		</svg>
 	</div>
 
-	<Seperator />
+	<CenterHorizontal Child={Seperator} />
 
 	<div class="flex flex-col gap-3">
 		<Button Text={Bookmark} label="bookmarks" {expand} />
@@ -44,9 +44,9 @@
 
 	<FillSpace />
 
-	<Seperator />
+	<CenterHorizontal Child={Seperator} />
 
-	<div class="flex flex-col gap-5 mb-2 px-3">
+	<div class="flex flex-col gap-5 mb-2">
 		<Button Text={Settings} label="settings" {expand} />
 	</div>
 </div>

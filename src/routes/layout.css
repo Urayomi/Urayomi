@@ -1,15 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Monda:wght@400..700&family=Valley+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
 :root {
-	/* --bg-main: #f1f6f7;
-	--bg-titlebar: #ffffff;
-	--text-main: #1a1a1a;
-	--control-hover: #e5e7eb; */
-
 	--bg-main: #121212;
 	--bg-titlebar: #1e1e1e;
 	--text-main: #f5f5f5;
 	--control-hover: #333333;
+
+	/* Font themes */
+	--font-main: "Valley Sans", sans-serif;
+	--font-mono: "Geist Mono", monospace;
+	--font-display: "Monda", sans-serif;
 }
 
 @theme {
@@ -17,6 +18,10 @@
 	--color-background: var(--bg-main);
 	--color-primary-text: var(--text-main);
 	--color-accent: var(--color-accent);
+
+	--font-sans: "Valley Sans", sans-serif;
+	--font-mono: "Geist Mono", monospace;
+	--font-display: "Monda", sans-serif;
 }
 
 .candy {
