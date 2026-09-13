@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 	import { open } from "@tauri-apps/plugin-dialog";
+	import type { LibraryManga } from "../types/LibraryManga";
 
-	let abc = $state<string[]>([]);
+	const MATCH = new RegExp("[^/\\\\]+?(?=\\.[^.]+$|\\(|\\[|\\s-\\s|$)");
+
+	let manga_list: LibraryManga[] = $state(await invoke("get_manga_list"));
 
 	async function selectFile() {
-		const path = await open({
+		const path: string | null = await open({
 			multiple: false,
 			directory: false,
 			filters: [
@@ -18,13 +21,23 @@
 
 		if (!path) return;
 
-		const data = await invoke("read_manga", { path, name: "placeholder" });
-		console.log(data);
-		abc = data as string[];
+		let cleaned_path = path?.match(MATCH)?.[0] || "unknown";
+		await invoke("read_manga", { path, name: cleaned_path });
+
+		manga_list = await invoke("get_manga_list");
 	}
 </script>
 
-<main class="container">
-	<button onclick={selectFile}>{abc[0]} asd</button>
-	<img alt="image1" src={convertFileSrc(abc[0])} />
+<main class="container w-full h-full">
+	<button onclick={selectFile}>aasdasdasdsd</button>
+
+	<div class="flex gap-2">
+		{#each manga_list as manga}
+			<img
+				alt="image1"
+				src={convertFileSrc(manga.cover_location)}
+				class="w-1/3 rounded"
+			/>
+		{/each}
+	</div>
 </main>

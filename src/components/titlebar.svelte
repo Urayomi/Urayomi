@@ -1,4 +1,5 @@
 <script>
+	// OLD CODE WILL GET REFACTORED SOON
 	import { getCurrentWindow } from "@tauri-apps/api/window";
 	import FillSpace from "./common/fill_space.svelte";
 
