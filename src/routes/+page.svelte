@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 	import { open } from "@tauri-apps/plugin-dialog";
-	import type { LibraryManga } from "../types/LibraryManga";
+	import type { LibraryManga } from "../lib/types/LibraryManga";
 
 	const MATCH = new RegExp("[^/\\\\]+?(?=\\.[^.]+$|\\(|\\[|\\s-\\s|$)");
 

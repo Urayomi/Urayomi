@@ -4,10 +4,9 @@
 
 	import Seperator from "./common/seperator.svelte";
 	import FillSpace from "./common/fill_space.svelte";
-	import Button from "./common/button.svelte";
 	import CenterHorizontal from "./common/center_horizontal.svelte";
-
-	let expand = $state(false);
+	import { sidebarState } from "./states/sidebar.svelte";
+	import Button from "./common/button.svelte";
 </script>
 
 <div
@@ -16,11 +15,14 @@
 		text-primary-text/90 gap-5 font-sans
 		overflow-hidden pl-2
 		transition-[width] duration-200
-		{expand ? 'w-48' : 'w-12'}
+		{sidebarState.expanded ? 'w-48' : 'w-12'}
 	"
 >
 	<div class="pl-1">
-		<button title="menu" onclick={() => (expand = !expand)}>
+		<button
+			title="menu"
+			onclick={() => (sidebarState.expanded = !sidebarState.expanded)}
+		>
 			<svg
 				fill="none"
 				viewBox="0 0 24 24"
@@ -37,40 +39,24 @@
 		</button>
 	</div>
 
-	<CenterHorizontal Child={Seperator} />
+	<CenterHorizontal><Seperator /></CenterHorizontal>
 
 	<div class="flex flex-col gap-3">
-		<Button
-			Text={Bookmark}
-			label="bookmarks"
-			{expand}
-			onclick={() => goto("/")}
-		/>
+		<Button Text={Bookmark} label="bookmarks" onclick={() => goto("/")} />
 
-		<Button
-			Text={Clock}
-			label="history"
-			{expand}
-			onclick={() => goto("/history")}
-		/>
+		<Button Text={Clock} label="history" onclick={() => goto("/history")} />
 
-		<Button
-			Text={Search}
-			label="search"
-			{expand}
-			onclick={() => goto("/search")}
-		/>
+		<Button Text={Search} label="search" onclick={() => goto("/search")} />
 	</div>
 
 	<FillSpace />
 
-	<CenterHorizontal Child={Seperator} />
+	<CenterHorizontal><Seperator /></CenterHorizontal>
 
 	<div class="flex flex-col gap-5 mb-2">
 		<Button
 			Text={Settings}
 			label="settings"
-			{expand}
 			onclick={() => goto("/settings")}
 		/>
 	</div>

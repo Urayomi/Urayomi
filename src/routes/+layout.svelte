@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Sidebar from "../lib/components/sidebar.svelte";
+	import Titlebar from "../lib/components/titlebar.svelte";
 	import "./layout.css";
-	import Titlebar from "../components/titlebar.svelte";
-	import Sidebar from "../components/sidebar.svelte";
 	const { children } = $props();
 </script>
 
