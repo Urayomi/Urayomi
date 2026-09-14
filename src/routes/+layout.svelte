@@ -10,7 +10,7 @@
 	<div class="flex flex-1 bg-surface flex-col">
 		<Titlebar />
 
-		<div class="bg-background flex-1 rounded-tl-2xl">
+		<div class="bg-background flex-1 rounded-tl-2xl p-2">
 			{@render children()}
 		</div>
 	</div>

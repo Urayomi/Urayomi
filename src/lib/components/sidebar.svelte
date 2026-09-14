@@ -13,12 +13,12 @@
 	class="
 		h-full bg-surface flex flex-col pt-2
 		text-primary-text/90 gap-5 font-sans
-		overflow-hidden pl-2
+		overflow-hidden
 		transition-[width] duration-200
 		{sidebarState.expanded ? 'w-48' : 'w-12'}
 	"
 >
-	<div class="pl-1">
+	<div class="pl-3">
 		<button
 			title="menu"
 			onclick={() => (sidebarState.expanded = !sidebarState.expanded)}
@@ -41,7 +41,7 @@
 
 	<CenterHorizontal><Seperator /></CenterHorizontal>
 
-	<div class="flex flex-col gap-3">
+	<div class="flex flex-col gap-3 pl-2">
 		<Button Text={Bookmark} label="bookmarks" onclick={() => goto("/")} />
 
 		<Button Text={Clock} label="history" onclick={() => goto("/history")} />
@@ -53,7 +53,7 @@
 
 	<CenterHorizontal><Seperator /></CenterHorizontal>
 
-	<div class="flex flex-col gap-5 mb-2">
+	<div class="flex flex-col gap-5 mb-2 pl-2">
 		<Button
 			Text={Settings}
 			label="settings"

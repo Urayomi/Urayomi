@@ -29,14 +29,14 @@
 </script>
 
 <main class="container w-full h-full">
-	<button onclick={selectFile}>aasdasdasdsd</button>
+	<button onclick={selectFile} class="text-white">aasdasdasdsd</button>
 
-	<div class="flex gap-2">
+	<div class="flex flex-wrap gap-4">
 		{#each manga_list as manga}
 			<img
-				alt="image1"
+				alt={manga.location}
 				src={convertFileSrc(manga.cover_location)}
-				class="w-1/3 rounded"
+				class="w-60 max-w-full rounded object-cover"
 			/>
 		{/each}
 	</div>
