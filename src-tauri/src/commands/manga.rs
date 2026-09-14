@@ -1,15 +1,17 @@
 use std::fs::{create_dir_all, File};
-use std::io::copy;
+use std::io::{copy, Write};
 use std::path::Path;
 
-use serde::Serialize;
 use tauri::{AppHandle, Manager};
+
+use crate::models::manga::Manga;
 
 #[tauri::command]
 pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
-    let mut archive = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
+    let mut archive: zip::ZipArchive<File> =
+        zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
 
     let data_dir = app.path().app_data_dir().map_err(|e| e.to_string())?;
 
@@ -35,14 +37,25 @@ pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>,
         images.push(output_path.to_string_lossy().to_string());
     }
 
-    Ok(images)
-}
+    let cnf = &output_dir.join("meta.json");
+    File::create(&cnf).map_err(|e| e.to_string())?;
 
-#[derive(Default, Serialize)]
-pub struct Manga {
-    location: String,
-    cover_location: String, // would usually be first picture in manga
-    pages: Vec<String>,     // [location, location, location]
+    images.sort();
+
+    let cover_location = images.first().unwrap().clone();
+
+    let manga = Manga {
+        cover_location,
+        location: output_dir.to_string_lossy().to_string(),
+        pages: images.clone(),
+        current_page: 0,
+    };
+
+    let json = serde_json::to_string_pretty(&manga).map_err(|e| e.to_string())?;
+
+    std::fs::write(&cnf, json).map_err(|e| e.to_string())?;
+
+    Ok(images)
 }
 
 #[tauri::command]
@@ -71,24 +84,16 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
     let manga_list: Vec<Manga> = paths
         .iter()
         .filter_map(|manga| {
-            let location = data_dir.join(manga.clone()).to_str()?.to_string();
-            let mut pages: Vec<String> = std::fs::read_dir(&location)
-                .unwrap()
-                .into_iter()
-                .filter_map(|f| f.ok())
-                .map(|f| f.path().to_string_lossy().into_owned())
-                .collect();
-            pages.sort();
+            let location = data_dir
+                .join(manga.clone())
+                .join("meta.json")
+                .to_str()?
+                .to_string();
+            let data = std::fs::read(location).ok()?;
 
-            let cover_location = pages.clone().first().unwrap().to_string();
-
-            Some(Manga {
-                location,
-                cover_location,
-                pages,
-            })
+            serde_json::from_slice(&data).ok()
         })
         .collect();
-
+    println!("{:?}", manga_list);
     Ok(manga_list)
 }
