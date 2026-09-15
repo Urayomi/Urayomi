@@ -2,6 +2,7 @@ use std::fs::{create_dir_all, File};
 use std::io::{copy, Write};
 use std::path::Path;
 
+use image::ImageReader;
 use tauri::{AppHandle, Manager};
 
 use crate::models::manga::Manga;
@@ -10,8 +11,7 @@ use crate::models::manga::Manga;
 pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
-    let mut archive: zip::ZipArchive<File> =
-        zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
+    let mut archive = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
 
     let data_dir = app.path().app_data_dir().map_err(|e| e.to_string())?;
 
@@ -19,14 +19,21 @@ pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>,
 
     create_dir_all(&output_dir).map_err(|e| e.to_string())?;
 
+    let thumbnail_dir = output_dir.join("thumbnail");
+    create_dir_all(&thumbnail_dir).map_err(|e| e.to_string())?;
+
     let mut images = Vec::new();
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i).map_err(|e| e.to_string())?;
 
-        let name = file.name().to_string();
+        if file.is_dir() {
+            continue;
+        }
 
-        let filename = Path::new(&name).file_name().ok_or("Invalid filename")?;
+        let filename = Path::new(file.name())
+            .file_name()
+            .ok_or("Invalid filename")?;
 
         let output_path = output_dir.join(filename);
 
@@ -37,15 +44,25 @@ pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>,
         images.push(output_path.to_string_lossy().to_string());
     }
 
-    let cnf = &output_dir.join("meta.json");
-    File::create(&cnf).map_err(|e| e.to_string())?;
-
     images.sort();
 
-    let cover_location = images.first().unwrap().clone();
+    let cover_location = images.first().ok_or("Manga contains no images")?.clone();
+
+    let thumbnail_path = thumbnail_dir.join("cover.webp");
+
+    let image = ImageReader::open(&cover_location)
+        .map_err(|e| e.to_string())?
+        .decode()
+        .map_err(|e| e.to_string())?;
+
+    let thumbnail = image.thumbnail(240, 360); // low quality cuz you cant really tell  + optimized
+
+    thumbnail.save(&thumbnail_path).map_err(|e| e.to_string())?;
+
+    let cnf = output_dir.join("meta.json");
 
     let manga = Manga {
-        cover_location,
+        cover_location: thumbnail_path.to_string_lossy().to_string(),
         location: output_dir.to_string_lossy().to_string(),
         pages: images.clone(),
         current_page: 0,

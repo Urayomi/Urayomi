@@ -7,10 +7,12 @@
 
 <main class="flex w-screen h-screen">
 	<Sidebar />
-	<div class="flex flex-1 bg-surface flex-col">
+	<div class="flex flex-1 min-h-0 min-w-0 bg-surface flex-col">
 		<Titlebar />
 
-		<div class="bg-background flex-1 rounded-tl-2xl p-2">
+		<div
+			class="bg-background min-h-0 min-w-0 flex flex-1 rounded-tl-2xl p-2 overflow-scroll"
+		>
 			{@render children()}
 		</div>
 	</div>
