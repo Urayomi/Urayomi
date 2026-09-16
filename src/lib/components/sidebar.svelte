@@ -42,11 +42,26 @@
 	<CenterHorizontal><Seperator /></CenterHorizontal>
 
 	<div class="flex flex-col gap-3 pl-2">
-		<Button Text={Bookmark} label="bookmarks" onclick={() => goto("/")} />
+		<Button
+			Text={Bookmark}
+			label="bookmarks"
+			onclick={() => goto("/")}
+			class="p-1"
+		/>
 
-		<Button Text={Clock} label="history" onclick={() => goto("/history")} />
+		<Button
+			Text={Clock}
+			label="history"
+			onclick={() => goto("/history")}
+			class="p-1"
+		/>
 
-		<Button Text={Search} label="search" onclick={() => goto("/search")} />
+		<Button
+			Text={Search}
+			label="search"
+			onclick={() => goto("/search")}
+			class="p-1"
+		/>
 	</div>
 
 	<FillSpace />

@@ -2,6 +2,9 @@
 	// OLD CODE WILL GET REFACTORED SOON
 	import { getCurrentWindow } from "@tauri-apps/api/window";
 	import FillSpace from "./common/fill_space.svelte";
+	import { Bookmark, Plus } from "@lucide/svelte";
+	import { goto } from "$app/navigation";
+	import Button from "./common/button.svelte";
 
 	const appWindow = getCurrentWindow();
 
@@ -61,24 +64,10 @@
 		</div>
 	</div>
 
-	<div class="h-full">
-		<button
-			class="inline-flex items-center justify-center w-11 h-full text-gray-400 hover:text-white hover:bg-white/10"
-			title="Back"
-		>
-			<svg
-				width="16"
-				height="16"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="m15 18-6-6 6-6" />
-			</svg>
-		</button>
+	<div
+		class="h-full color flex items-center justify-center text-primary-text/90"
+	>
+		<Button Text={Plus} onclick={() => goto("/")} class="" />
 	</div>
 
 	<FillSpace />
