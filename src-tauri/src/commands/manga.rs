@@ -114,3 +114,45 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
     println!("{:?}", manga_list);
     Ok(manga_list)
 }
+
+#[tauri::command]
+pub fn get_manga(path: &str) -> Result<Manga, String> {
+    // let data_dir = app
+    //     .path()
+    //     .app_data_dir()
+    //     .map_err(|e| e.to_string())?
+    //     .join("manga.json");
+
+    let path = Path::new(path).join("meta.json");
+    println!("{:?}", path);
+    let entry = std::fs::read(path).map_err(|e| e.to_string())?;
+
+    let data: Manga = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
+
+    Ok(data)
+
+    // let paths = entries
+    //     .filter_map(|entry| entry.ok())
+    //     .filter_map(|entry| {
+    //         entry
+    //             .path()
+    //             .file_name()
+    //             .and_then(|path| path.to_str())
+    //             .map(String::from)
+    //     })
+    //     .collect::<Vec<String>>();
+
+    // let manga_list: Vec<Manga> = paths
+    //     .iter()
+    //     .filter_map(|manga| {
+    //         let location = data_dir
+    //             .join(manga.clone())
+    //             .join("meta.json")
+    //             .to_str()?
+    //             .to_string();
+    //         let data = std::fs::read(location).ok()?;
+
+    //         serde_json::from_slice(&data).ok()
+    //     })
+    //     .collect();
+}

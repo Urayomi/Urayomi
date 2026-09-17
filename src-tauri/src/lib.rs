@@ -8,7 +8,8 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::manga::read_manga,
-            commands::manga::get_manga_list
+            commands::manga::get_manga_list,
+            commands::manga::get_manga
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

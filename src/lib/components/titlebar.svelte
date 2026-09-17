@@ -5,6 +5,7 @@
 	import { Bookmark, Plus } from "@lucide/svelte";
 	import { goto } from "$app/navigation";
 	import Button from "./common/button.svelte";
+	import { selectFile } from "$lib/constants/util";
 
 	const appWindow = getCurrentWindow();
 
@@ -67,7 +68,7 @@
 	<div
 		class="h-full color flex items-center justify-center text-primary-text/90"
 	>
-		<Button Text={Plus} onclick={() => goto("/")} class="" />
+		<Button Text={Plus} onclick={selectFile} class="" expand={false} />
 	</div>
 
 	<FillSpace />
