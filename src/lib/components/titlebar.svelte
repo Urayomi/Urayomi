@@ -2,10 +2,11 @@
 	// OLD CODE WILL GET REFACTORED SOON
 	import { getCurrentWindow } from "@tauri-apps/api/window";
 	import FillSpace from "./common/fill_space.svelte";
-	import { Bookmark, Plus } from "@lucide/svelte";
+	import { Bookmark, EyeIcon, EyeOff, Plus } from "@lucide/svelte";
 	import { goto } from "$app/navigation";
 	import Button from "./common/button.svelte";
 	import { selectFile } from "$lib/constants/util";
+	import { sidebarState } from "./states/sidebar.svelte";
 
 	const appWindow = getCurrentWindow();
 
@@ -66,9 +67,15 @@
 	</div>
 
 	<div
-		class="h-full color flex items-center justify-center text-primary-text/90"
+		class="h-full color flex items-center justify-center text-primary-text/90 gap-3"
 	>
 		<Button Text={Plus} onclick={selectFile} class="" expand={false} />
+		<Button
+			Text={sidebarState.hidden ? EyeIcon : EyeOff}
+			label="hide"
+			onclick={() => (sidebarState.hidden = !sidebarState.hidden)}
+			expand={false}
+		/>
 	</div>
 
 	<FillSpace />

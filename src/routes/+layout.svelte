@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { sidebarState } from "$lib/components/states/sidebar.svelte";
 	import Sidebar from "../lib/components/sidebar.svelte";
 	import Titlebar from "../lib/components/titlebar.svelte";
 	import "./layout.css";
@@ -6,7 +7,9 @@
 </script>
 
 <main class="flex w-screen h-screen">
-	<Sidebar />
+	{#if !sidebarState.hidden}
+		<Sidebar />
+	{/if}
 	<div class="flex flex-1 min-h-0 min-w-0 bg-surface flex-col">
 		<Titlebar />
 

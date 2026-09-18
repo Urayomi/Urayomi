@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { Bookmark, Clock, Library, Search, Settings } from "@lucide/svelte";
+	import {
+		Bookmark,
+		Clock,
+		EyeOff,
+		Library,
+		Search,
+		Settings,
+	} from "@lucide/svelte";
 	import { page } from "$app/state";
 
 	import Seperator from "./common/seperator.svelte";
