@@ -1,9 +1,21 @@
 <script lang="ts">
 	import { sidebarState } from "$lib/components/states/sidebar.svelte";
+	import { Activity, Timestamps } from "tauri-plugin-drpc/activity";
 	import Sidebar from "../lib/components/sidebar.svelte";
 	import Titlebar from "../lib/components/titlebar.svelte";
 	import "./layout.css";
 	const { children } = $props();
+	import {
+		setActivity,
+		clearActivity,
+		destroy,
+		start,
+	} from "tauri-plugin-drpc";
+	import { set_rpc } from "$lib/constants/util";
+
+	await start("1385376580691427440");
+
+	set_rpc();
 </script>
 
 <main class="flex w-screen h-screen">

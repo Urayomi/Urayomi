@@ -1,5 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
+import { setActivity } from "tauri-plugin-drpc";
+import { Activity, Timestamps } from "tauri-plugin-drpc/activity";
 
 export const MATCH = /[^/\\]+(?=\.[^.]+$|$)/;
 
@@ -25,4 +27,13 @@ export async function selectFile() {
 		// console.log(cleaned_path);
 		await invoke("read_manga", { path, name: parsed });
 	}
+}
+
+export async function set_rpc() {
+	const activity = new Activity()
+		.setDetails("Witch Hat Atelier")
+		.setState("Reading • Page 3 / 18")
+		.setTimestamps(new Timestamps(Date.now()));
+
+	await setActivity(activity);
 }

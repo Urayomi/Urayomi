@@ -6,6 +6,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_drpc::init())
         .invoke_handler(tauri::generate_handler![
             commands::manga::read_manga,
             commands::manga::get_manga_list,
