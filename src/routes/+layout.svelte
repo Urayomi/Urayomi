@@ -15,7 +15,7 @@
 
 	await start("1385376580691427440");
 
-	set_rpc();
+	set_rpc("Reading Manga...", "Home page");
 </script>
 
 <main class="flex w-screen h-screen">

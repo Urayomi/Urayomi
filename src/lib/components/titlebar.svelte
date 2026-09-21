@@ -28,7 +28,10 @@
 	class="titlebar flex flex-row items-center w-full h-9 bg-surface select-none"
 >
 	<div class="flex items-center h-full">
-		<div class="flex items-center gap-2 px-3 select-none pointer-events-none">
+		<button
+			class="flex items-center gap-2 px-3 select-none cursor-pointer"
+			on:click={() => goto("/")}
+		>
 			<svg width="18" height="18" viewBox="0 0 200 200" class="opacity-90">
 				<rect
 					x="20"
@@ -63,7 +66,7 @@
 			>
 				Urayomi
 			</span>
-		</div>
+		</button>
 	</div>
 
 	<div

@@ -3,4 +3,5 @@ export interface LibraryManga {
 	cover_location: string;
 	pages: string;
 	current_page: number;
+	name: string;
 }

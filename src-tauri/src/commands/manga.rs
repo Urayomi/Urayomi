@@ -8,7 +8,12 @@ use tauri::{AppHandle, Manager};
 use crate::models::manga::Manga;
 
 #[tauri::command]
-pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>, String> {
+pub fn read_manga(
+    app: AppHandle,
+    path: &str,
+    name: &str,
+    manga_name: &str,
+) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
     let mut archive = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
@@ -66,6 +71,7 @@ pub fn read_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>,
         location: output_dir.to_string_lossy().to_string(),
         pages: images.clone(),
         current_page: 0,
+        name: String::from(manga_name),
     };
 
     let json = serde_json::to_string_pretty(&manga).map_err(|e| e.to_string())?;
