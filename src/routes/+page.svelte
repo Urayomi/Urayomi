@@ -3,6 +3,7 @@
 
 	import { mangaStates } from "$lib/components/states/manga_list.svelte";
 	import { goto } from "$app/navigation";
+	import { Star } from "@lucide/svelte";
 
 	mangaStates.manga_list = await invoke("get_manga_list");
 
@@ -34,17 +35,30 @@
 				{#if open === manga.location}
 					<div
 						role="dialog"
-						class="absolute inset-x-2 bottom-2 flex flex-col gap-2 rounded-lg bg-neutral-900/95 p-3 text-sm text-neutral-100 shadow-lg"
+						class="absolute bottom-0 flex flex-col gap-2 bg-surface p-2 text-sm text-neutral-100 shadow-lg"
 					>
-						<h2 class="line-clamp-1 font-semibold">
-							{manga.location.split(/[\\/]/).pop()}
-						</h2>
-						<p class="line-clamp-1 text-xs break-all text-neutral-400">
+						<div class="flex items-center">
+							<h2 class="line-clamp-1 min-w-0 flex-1 font-semibold">
+								{manga.location.split(/[\\/]/).pop()}
+							</h2>
+
+							<button
+								type="button"
+								aria-label="Favorite"
+								class="flex size-8 shrink-0 items-center justify-center rounded-full
+								   bg-primary-text/10 text-primary-text transition
+								   hover:bg-white/20 hover:text-yellow-400"
+							>
+								<Star class="size-4" strokeWidth={2} />
+							</button>
+						</div>
+
+						<p class="line-clamp-1 text-xs break-all text-primary-text/50">
 							{manga.location}
 						</p>
 						<button
 							onclick={() => goto(`/read?book=${manga.location}`)}
-							class="rounded bg-white py-1.5 font-medium text-neutral-900 hover:bg-neutral-200"
+							class="rounded bg-primary-text py-1.5 font-medium text-neutral-900 hover:bg-neutral-200"
 						>
 							Read
 						</button>
