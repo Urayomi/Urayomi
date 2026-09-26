@@ -7,4 +7,5 @@ pub struct Manga {
     pub pages: Vec<String>,     // [location, location, location]
     pub current_page: i32,
     pub name: String,
+    pub favorite: bool,
 }

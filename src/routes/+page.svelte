@@ -45,6 +45,7 @@
 							<button
 								type="button"
 								aria-label="Favorite"
+								onclick={() => }
 								class="flex size-8 shrink-0 items-center justify-center rounded-full
 								   bg-primary-text/10 text-primary-text transition
 								   hover:bg-white/20 hover:text-yellow-400"

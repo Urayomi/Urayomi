@@ -72,6 +72,7 @@ pub fn read_manga(
         pages: images.clone(),
         current_page: 0,
         name: String::from(manga_name),
+        favorite: false,
     };
 
     let json = serde_json::to_string_pretty(&manga).map_err(|e| e.to_string())?;
