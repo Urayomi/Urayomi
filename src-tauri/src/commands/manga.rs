@@ -3,9 +3,19 @@ use std::io::{copy, Write};
 use std::path::Path;
 
 use image::ImageReader;
+use rand::distr::Alphanumeric;
+use rand::{Rng, RngExt};
 use tauri::{AppHandle, Manager};
 
 use crate::models::manga::Manga;
+
+fn random_id() -> String {
+    rand::rng()
+        .sample_iter(&Alphanumeric)
+        .take(12)
+        .map(char::from)
+        .collect()
+}
 
 #[tauri::command]
 pub fn read_manga(
@@ -64,9 +74,11 @@ pub fn read_manga(
 
     thumbnail.save(&thumbnail_path).map_err(|e| e.to_string())?;
 
-    let cnf = output_dir.join("meta.json");
+    let cnf: std::path::PathBuf = output_dir.join("meta.json");
 
     let manga = Manga {
+        id: random_id(),
+        last_opened: 0,
         cover_location: thumbnail_path.to_string_lossy().to_string(),
         location: output_dir.to_string_lossy().to_string(),
         pages: images.clone(),
@@ -124,12 +136,6 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
 
 #[tauri::command]
 pub fn get_manga(path: &str) -> Result<Manga, String> {
-    // let data_dir = app
-    //     .path()
-    //     .app_data_dir()
-    //     .map_err(|e| e.to_string())?
-    //     .join("manga.json");
-
     let path = Path::new(path).join("meta.json");
     println!("{:?}", path);
     let entry = std::fs::read(path).map_err(|e| e.to_string())?;
@@ -137,29 +143,23 @@ pub fn get_manga(path: &str) -> Result<Manga, String> {
     let data: Manga = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
 
     Ok(data)
+}
 
-    // let paths = entries
-    //     .filter_map(|entry| entry.ok())
-    //     .filter_map(|entry| {
-    //         entry
-    //             .path()
-    //             .file_name()
-    //             .and_then(|path| path.to_str())
-    //             .map(String::from)
-    //     })
-    //     .collect::<Vec<String>>();
+#[tauri::command]
+pub fn favorite_manga(path: &str) -> Result<Manga, String> {
+    let path = Path::new(path).join("meta.json");
+    println!("{:?}", path);
+    let entry = std::fs::read(&path).map_err(|e| e.to_string())?;
 
-    // let manga_list: Vec<Manga> = paths
-    //     .iter()
-    //     .filter_map(|manga| {
-    //         let location = data_dir
-    //             .join(manga.clone())
-    //             .join("meta.json")
-    //             .to_str()?
-    //             .to_string();
-    //         let data = std::fs::read(location).ok()?;
+    let mut data: Manga = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
 
-    //         serde_json::from_slice(&data).ok()
-    //     })
-    //     .collect();
+    data.favorite = !data.favorite;
+
+    let json = serde_json::to_string_pretty(&data).map_err(|e| e.to_string())?;
+
+    std::fs::write(&path, json).map_err(|e| e.to_string())?;
+
+    println!("Set favorite status to: {:?}", data);
+
+    Ok(data)
 }

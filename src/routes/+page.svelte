@@ -8,6 +8,11 @@
 	mangaStates.manga_list = await invoke("get_manga_list");
 
 	let open = $state<string | null>(null);
+
+	async function favorite_manga(path: string) {
+		await invoke("favorite_manga", { path });
+		mangaStates.manga_list = await invoke("get_manga_list");
+	}
 </script>
 
 <svelte:window
@@ -45,12 +50,15 @@
 							<button
 								type="button"
 								aria-label="Favorite"
-								onclick={() => }
-								class="flex size-8 shrink-0 items-center justify-center rounded-full
+								onclick={() => favorite_manga(manga.location)}
+								class={`flex size-8 shrink-0 items-center justify-center rounded-full
 								   bg-primary-text/10 text-primary-text transition
-								   hover:bg-white/20 hover:text-yellow-400"
+								   hover:bg-white/20`}
 							>
-								<Star class="size-4" strokeWidth={2} />
+								<Star
+									class={`size-4 ${manga.favorite ? "text-yellow-400 fill-yellow-400" : "text-primary-text"}`}
+									strokeWidth={2}
+								/>
 							</button>
 						</div>
 
