@@ -15,6 +15,7 @@
 	}
 </script>
 
+a
 <svelte:window
 	onclick={(e) => {
 		if (!(e.target as Element).closest("[data-card]")) open = null;
