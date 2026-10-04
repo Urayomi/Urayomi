@@ -1,3 +1,5 @@
+interface Metadata {}
+
 export interface LibraryManga {
 	location: string;
 	cover_location: string;

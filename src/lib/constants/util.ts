@@ -29,7 +29,7 @@ export async function selectFile() {
 		let parsed = path?.match(MATCH)?.[0] || "unknown";
 		let mangaName = path?.match(NAME_MATCH)?.[0] || "unknown";
 		// console.log(cleaned_path);
-		await invoke("read_manga", { path, name: parsed, mangaName });
+		await invoke("process_manga", { path, name: parsed, mangaName });
 	}
 }
 

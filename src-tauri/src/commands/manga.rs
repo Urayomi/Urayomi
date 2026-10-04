@@ -4,26 +4,13 @@ use std::path::Path;
 
 use image::ImageReader;
 use rand::distr::Alphanumeric;
-use rand::{Rng, RngExt};
+use rand::RngExt;
 use tauri::{AppHandle, Manager};
 
-use crate::models::manga::Manga;
-
-fn random_id() -> String {
-    rand::rng()
-        .sample_iter(&Alphanumeric)
-        .take(12)
-        .map(char::from)
-        .collect()
-}
+use crate::models::{Book, BookMetadata, BookType};
 
 #[tauri::command]
-pub fn read_manga(
-    app: AppHandle,
-    path: &str,
-    name: &str,
-    manga_name: &str,
-) -> Result<Vec<String>, String> {
+pub fn process_manga(app: AppHandle, path: &str, name: &str) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
     let mut archive = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
@@ -76,16 +63,15 @@ pub fn read_manga(
 
     let cnf: std::path::PathBuf = output_dir.join("meta.json");
 
-    let manga = Manga {
-        id: random_id(),
-        last_opened: 0,
-        cover_location: thumbnail_path.to_string_lossy().to_string(),
-        location: output_dir.to_string_lossy().to_string(),
-        pages: images.clone(),
-        current_page: 0,
-        name: String::from(manga_name),
-        favorite: false,
-    };
+    let metadata = BookMetadata::default();
+
+    let manga = Book::new(
+        BookType::Novel,
+        output_dir,
+        cover_location,
+        images.clone(),
+        metadata,
+    );
 
     let json = serde_json::to_string_pretty(&manga).map_err(|e| e.to_string())?;
 
@@ -95,7 +81,7 @@ pub fn read_manga(
 }
 
 #[tauri::command]
-pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
+pub fn get_manga_list(app: AppHandle) -> Result<Vec<Book>, String> {
     let data_dir = app
         .path()
         .app_data_dir()
@@ -117,7 +103,7 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
         })
         .collect::<Vec<String>>();
 
-    let manga_list: Vec<Manga> = paths
+    let manga_list: Vec<Book> = paths
         .iter()
         .filter_map(|manga| {
             let location = data_dir
@@ -135,23 +121,23 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Manga>, String> {
 }
 
 #[tauri::command]
-pub fn get_manga(path: &str) -> Result<Manga, String> {
+pub fn get_manga(path: &str) -> Result<Book, String> {
     let path = Path::new(path).join("meta.json");
     println!("{:?}", path);
     let entry = std::fs::read(path).map_err(|e| e.to_string())?;
 
-    let data: Manga = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
+    let data: Book = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
 
     Ok(data)
 }
 
 #[tauri::command]
-pub fn favorite_manga(path: &str) -> Result<Manga, String> {
+pub fn favorite_manga(path: &str) -> Result<Book, String> {
     let path = Path::new(path).join("meta.json");
     println!("{:?}", path);
     let entry = std::fs::read(&path).map_err(|e| e.to_string())?;
 
-    let mut data: Manga = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
+    let mut data: Book = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
 
     data.favorite = !data.favorite;
 
