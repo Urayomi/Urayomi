@@ -62,6 +62,7 @@ pub fn process_manga(
         }
     }
     images.sort();
+    pages.sort();
 
     let cover_location = images.first().ok_or("Manga contains no images")?.clone();
 

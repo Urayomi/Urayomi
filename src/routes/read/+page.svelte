@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 	import { page } from "$app/state";
-	import type { LibraryManga } from "$lib/types/LibraryManga";
-	import { MATCH, set_rpc } from "$lib/constants/util";
+	import type { Book } from "$lib/types/LibraryManga";
+	import { set_rpc } from "$lib/constants/util";
 
 	const params = new URLSearchParams(page.url.search);
 	const book: string | null = params.get("book");
 
-	const data: LibraryManga = await invoke("get_manga", { path: book });
+	const data: Book = await invoke("get_manga", { path: book });
 
 	let current_page = $state(0);
 
 	$effect(() => {
 		set_rpc(
-			data.name,
+			data.metadata.title,
 			`Reading • Page ${current_page + 1} / ${data.pages.length}`,
 		);
 	});
@@ -24,7 +24,7 @@
 	$effect(() => {
 		const left = data.pages[current_page];
 		const right = data.pages[current_page + 1];
-
+		console.log(left, right);
 		leftSrc = "";
 		rightSrc = "";
 
