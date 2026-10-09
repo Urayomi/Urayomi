@@ -10,7 +10,7 @@ use tauri::{AppHandle, Manager};
 use crate::models::{Book, BookMetadata, BookType};
 
 const EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"];
-const NOVEL_EXTENSIONS: &[&str] = &["html", "html"];
+const NOVEL_EXTENSIONS: &[&str] = &["html", "htm", "xhtml", "html"];
 
 #[tauri::command]
 pub fn process_manga(
@@ -18,6 +18,7 @@ pub fn process_manga(
     path: &str,
     name: &str,
     novel: bool,
+    manga_name: &str,
 ) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
@@ -79,11 +80,16 @@ pub fn process_manga(
 
     let cnf: std::path::PathBuf = output_dir.join("meta.json");
 
-    let metadata = BookMetadata::default();
+    let mut metadata = BookMetadata::default();
+    metadata.title = String::from(manga_name);
 
     let pagething = if novel { pages.clone() } else { images.clone() };
     let manga = Book::new(
-        BookType::Novel,
+        if novel {
+            BookType::Novel
+        } else {
+            BookType::Manga
+        },
         output_dir,
         cover_location,
         pagething,
@@ -144,8 +150,16 @@ pub fn get_manga(path: &str) -> Result<Book, String> {
     let entry = std::fs::read(path).map_err(|e| e.to_string())?;
 
     let data: Book = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
-
+    println!("{:?}", data);
     Ok(data)
+}
+
+#[tauri::command]
+pub fn get_novel_page(path: &str) -> Result<String, String> {
+    let entry = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
+
+    println!("{:?}", entry);
+    Ok(entry)
 }
 
 #[tauri::command]

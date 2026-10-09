@@ -27,13 +27,16 @@ export async function selectFile() {
 		// goes through each selection so uploading is easier.
 		// console.log(path);
 		let parsed = path?.match(MATCH)?.[0] || "unknown";
-		let mangaName = path?.match(NAME_MATCH)?.[0] || "unknown";
+		let manga_name = path?.match(NAME_MATCH)?.[0] || "unknown";
 		// console.log(cleaned_path);
+		let EXPERIMENTAL_IMPORT_AS_NOVEL =
+			prompt("import as novel? Y/n", "y")?.toLowerCase() == "y";
+		console.log(`manga name is ${manga_name}`);
 		await invoke("process_manga", {
 			path,
 			name: parsed,
-			mangaName,
-			novel: true,
+			mangaName: manga_name,
+			novel: EXPERIMENTAL_IMPORT_AS_NOVEL,
 		});
 	}
 }
@@ -43,6 +46,7 @@ export async function set_rpc(
 	state: string = "",
 	important: boolean = false,
 ) {
+	console.log(details, state);
 	const activity = new Activity()
 		.setDetails(details)
 		.setState(state)
