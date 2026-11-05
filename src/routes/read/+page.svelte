@@ -15,12 +15,11 @@
 
 	const data: Book = await invoke("get_manga", { path: book });
 	const is_novel = data.book_type === "Novel";
-	const step = is_novel ? 1 : 2;
+	const step = 1;
 	const total = data.pages.length;
 
 	let current_page = $state(0);
 
-	// Keep the internal page index increasing in reading order.
 	function go(delta: number) {
 		const max = Math.max(total - 1, 0);
 
@@ -39,18 +38,15 @@
 	});
 
 	let leftSrc = $state("");
-	let rightSrc = $state("");
 
 	async function update_pages(
 		first: string | undefined,
 		second: string | undefined,
 	) {
 		leftSrc = "";
-		rightSrc = "";
 
 		if (is_novel) {
 			leftSrc = first ? await load_novel_page(first) : "";
-			rightSrc = second ? await load_novel_page(second) : "";
 		}
 	}
 
@@ -59,15 +55,12 @@
 		const second = data.pages[current_page + 1];
 
 		leftSrc = "";
-		rightSrc = "";
 
 		if (is_novel) {
 			queueMicrotask(() => {
 				void update_pages(first, second);
 			});
 		} else {
-			// Manga: first page on the right, second page on the left.
-			rightSrc = first ? convertFileSrc(first) : "";
 			leftSrc = second ? convertFileSrc(second) : "";
 		}
 	});
@@ -91,7 +84,6 @@
 					/>
 				{/if}
 			</button>
-
 			<div class={novel_class}>
 				{@html leftSrc}
 			</div>
@@ -110,32 +102,54 @@
 				{/if}
 			</button>
 		{:else}
-			<!-- Left side advances to the next manga spread. -->
-			<button
-				onclick={() => go(1)}
-				disabled={!can_next}
-				aria-label="Next pages"
-				class="flex-1 min-w-0 min-h-0 overflow-hidden"
-			>
-				<img
-					alt="Page {current_page + 2}"
-					src={leftSrc}
-					class="w-full h-full rounded object-contain"
-				/>
-			</button>
-
-			<!-- Right side returns to the previous manga spread. -->
 			<button
 				onclick={() => go(-1)}
 				disabled={!can_prev}
-				aria-label="Previous pages"
-				class="flex-1 min-w-0 min-h-0 overflow-hidden"
+				aria-label="Previous page"
+				tabindex="-1"
+				class={gutter_class}
 			>
+				{#if can_prev}
+					<ChevronRight
+						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
+					/>
+				{/if}
+			</button>
+
+			<div class="relative flex w-fit h-fit min-w-0 min-h-0">
 				<img
 					alt="Page {current_page + 1}"
-					src={rightSrc}
-					class="w-full h-full rounded object-contain"
+					src={leftSrc}
+					class="max-w-full max-h-full rounded object-contain pointer-events-none"
 				/>
+
+				<button
+					onclick={() => go(-1)}
+					disabled={!can_prev}
+					aria-label="Previous page"
+					class="absolute inset-y-0 left-0 w-1/2 cursor-pointer"
+				></button>
+
+				<button
+					onclick={() => go(1)}
+					disabled={!can_next}
+					aria-label="Next page"
+					class="absolute inset-y-0 right-0 w-1/2 cursor-pointer"
+				></button>
+			</div>
+
+			<button
+				onclick={() => go(1)}
+				disabled={!can_next}
+				aria-label="Next page"
+				tabindex="-1"
+				class={gutter_class}
+			>
+				{#if can_next}
+					<ChevronRight
+						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
+					/>
+				{/if}
 			</button>
 		{/if}
 	</div>
@@ -149,37 +163,27 @@
 
 		<div class="flex shrink-0 items-center gap-1">
 			<button
-				onclick={() => go(-1)}
-				disabled={!can_prev}
-				aria-label="Previous pages"
-				class="flex size-7 items-center justify-center rounded hover:bg-primary-text/10 disabled:opacity-30 disabled:hover:bg-transparent"
-			>
-				{#if is_novel}
-					<ChevronLeft class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-			</button>
-
-			<span
-				class="min-w-24 text-center text-xs tabular-nums text-primary-text/50"
-			>
-				{current_page + 1}{last_visible > current_page + 1
-					? `–${last_visible}`
-					: ""} / {total}
-			</span>
-
-			<button
 				onclick={() => go(1)}
 				disabled={!can_next}
 				aria-label="Next pages"
 				class="flex size-7 items-center justify-center rounded hover:bg-primary-text/10 disabled:opacity-30 disabled:hover:bg-transparent"
 			>
-				{#if is_novel}
-					<ChevronRight class="size-4" />
-				{:else}
-					<ChevronLeft class="size-4" />
-				{/if}
+				<ChevronLeft class="size-4" />
+			</button>
+
+			<span
+				class="min-w-24 text-center text-xs tabular-nums text-primary-text/50"
+			>
+				{current_page} / {total}
+			</span>
+
+			<button
+				onclick={() => go(-1)}
+				disabled={!can_prev}
+				aria-label="Previous pages"
+				class="flex size-7 items-center justify-center rounded hover:bg-primary-text/10 disabled:opacity-30 disabled:hover:bg-transparent"
+			>
+				<ChevronRight class="size-4" />
 			</button>
 		</div>
 	</div>
