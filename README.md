@@ -32,18 +32,13 @@ THIS PROJECT IS NO LONGER BEING MAINTAINED, A REWRITE WILL BE AVAILABLE SOON
 - [x] Extension-based content system
 - [x] Customizable reading experience
 - [x] Lightweight and fast UI
-  <!-- - Sync-ready architecture (future-proofed) -->
-  <!-- - Offline reading support -->
 
 ---
 
 ## Roadmap
 
-- UI refactor and performance improvements
-- Extension system hardening
-- Cloud sync support
+- Chrome/VSC like tabs
 - Bookmark and progress tracking improvements
-- Plugin API stabilization
 
 ---
 
@@ -53,31 +48,18 @@ If you find this project useful, consider starring the repository. It helps visi
 
 ## Platforms
 
-| Platform | Status    | Notes            |
-| -------- | --------- | ---------------- |
-| Windows  | Supported | Full feature set |
-| macOS    | Supported | Full feature set |
-| Linux    | Supported | Full feature set |
-| Android  | Supported | Full feature set |
-| iOS      | Supported | Full feature set |
+| Platform | Status    |
+| -------- | --------- |
+| Windows  | Supported |
+| macOS    | Supported |
+| Linux    | Supported |
+| Android  | Supported |
+| iOS      | Supported |
 
 ## Versioning
 
-- Codebase is currently undergoing restructuring
-- Some legacy behavior may remain in older builds
-- API stability is not guaranteed before v1.0.0
-
----
-
-## Sources
-
-extensions are available here: [Urayomi-Extensions GitHub](https://github.com/De1p0/Urayomi-Extensions)
-
----
-
-## Contributing
-
-Yes I know the code is messy, I'm planning to refactor everything in newer updates, if you would like to add contribute please join the discord
+- Codebase is currently being recoded from legacy
+- Some legacy behavior may remain
 
 ---
 

@@ -6,12 +6,14 @@
 	import { Star } from "@lucide/svelte";
 
 	mangaStates.manga_list = await invoke("get_manga_list");
+	mangaStates.manga_list = mangaStates.manga_list.filter((x) => x.favorite);
 
 	let open = $state<string | null>(null);
 
 	async function favorite_manga(path: string) {
 		await invoke("favorite_manga", { path });
 		mangaStates.manga_list = await invoke("get_manga_list");
+		mangaStates.manga_list = mangaStates.manga_list.filter((x) => x.favorite);
 	}
 </script>
 

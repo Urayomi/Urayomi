@@ -7,7 +7,6 @@
 	import Manga from "$lib/components/common/manga.svelte";
 
 	const filters = ["All", "Favorites", "Manga", "Novels"];
-	const sorts = ["Default", "A to Z", "Z to A"];
 
 	let query = $state("");
 	let filter = $state("All");
@@ -150,16 +149,6 @@
 				</button>
 			{/each}
 		</nav>
-
-		<select
-			bind:value={sort}
-			aria-label="Sort library"
-			class="h-8 shrink-0 rounded border border-primary-text/10 bg-surface px-2 text-xs text-primary-text outline-none focus:border-primary-text/30"
-		>
-			{#each sorts as option}
-				<option>{option}</option>
-			{/each}
-		</select>
 
 		<span class="ml-auto shrink-0 text-xs tabular-nums text-primary-text/50">
 			{results.length === index.length
