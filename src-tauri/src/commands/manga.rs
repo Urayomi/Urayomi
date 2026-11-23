@@ -10,14 +10,15 @@ use tauri::{AppHandle, Manager};
 use crate::models::{Book, BookMetadata, BookType};
 
 const EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "ico"];
-const NOVEL_EXTENSIONS: &[&str] = &["html", "html"];
+const NOVEL_EXTENSIONS: &[&str] = &["html", "htm", "xhtml", "html"];
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn process_manga(
     app: AppHandle,
     path: &str,
     name: &str,
     novel: bool,
+    manga_name: &str,
 ) -> Result<Vec<String>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
 
@@ -61,6 +62,7 @@ pub fn process_manga(
             images.push(output_path.to_string_lossy().to_string());
         }
     }
+
     images.sort();
     pages.sort();
 
@@ -77,15 +79,22 @@ pub fn process_manga(
 
     thumbnail.save(&thumbnail_path).map_err(|e| e.to_string())?;
 
+    let thumbnail_location = thumbnail_path.to_string_lossy().to_string();
+
     let cnf: std::path::PathBuf = output_dir.join("meta.json");
 
-    let metadata = BookMetadata::default();
+    let mut metadata = BookMetadata::default();
+    metadata.title = String::from(manga_name);
 
     let pagething = if novel { pages.clone() } else { images.clone() };
     let manga = Book::new(
-        BookType::Novel,
+        if novel {
+            BookType::Novel
+        } else {
+            BookType::Manga
+        },
         output_dir,
-        cover_location,
+        thumbnail_location,
         pagething,
         metadata,
     );
@@ -97,7 +106,7 @@ pub fn process_manga(
     Ok(images)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn get_manga_list(app: AppHandle) -> Result<Vec<Book>, String> {
     let data_dir = app
         .path()
@@ -123,32 +132,41 @@ pub fn get_manga_list(app: AppHandle) -> Result<Vec<Book>, String> {
     let manga_list: Vec<Book> = paths
         .iter()
         .filter_map(|manga| {
-            let location = data_dir
-                .join(manga.clone())
-                .join("meta.json")
-                .to_str()?
-                .to_string();
-            let data = std::fs::read(location).ok()?;
+            let dir = data_dir.join(manga);
+            let data = std::fs::read(dir.join("meta.json")).ok()?;
+            let mut book: Book = serde_json::from_slice(&data).ok()?;
 
-            serde_json::from_slice(&data).ok()
+            let thumbnail = dir.join("thumbnail").join("cover.webp");
+            if thumbnail.exists() {
+                book.cover_location = thumbnail.to_string_lossy().to_string();
+            }
+
+            book.pages = Vec::new();
+
+            Some(book)
         })
         .collect();
-    println!("{:?}", manga_list);
     Ok(manga_list)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 pub fn get_manga(path: &str) -> Result<Book, String> {
     let path = Path::new(path).join("meta.json");
     println!("{:?}", path);
     let entry = std::fs::read(path).map_err(|e| e.to_string())?;
 
     let data: Book = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
-
     Ok(data)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
+pub fn get_novel_page(path: &str) -> Result<String, String> {
+    let entry = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
+
+    Ok(entry)
+}
+
+#[tauri::command(async)]
 pub fn favorite_manga(path: &str) -> Result<Book, String> {
     let path = Path::new(path).join("meta.json");
     println!("{:?}", path);
@@ -161,8 +179,6 @@ pub fn favorite_manga(path: &str) -> Result<Book, String> {
     let json = serde_json::to_string_pretty(&data).map_err(|e| e.to_string())?;
 
     std::fs::write(&path, json).map_err(|e| e.to_string())?;
-
-    println!("Set favorite status to: {:?}", data);
 
     Ok(data)
 }

@@ -1,0 +1,3 @@
+Turn topbar into tabs like vscode/chrome
+
+Preview Manga on change
