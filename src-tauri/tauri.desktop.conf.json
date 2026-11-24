@@ -1,0 +1,14 @@
+{
+	"app": {
+		"security": {
+			"capabilities": [
+				"default",
+				{
+					"identifier": "desktop",
+					"windows": ["main"],
+					"permissions": ["drpc:default"]
+				}
+			]
+		}
+	}
+}

@@ -14,8 +14,6 @@
 		"dialog:default",
 		"core:path:default",
 		"core:resources:default",
-		"dialog:default",
-		"drpc:default",
-		"drpc:allow-clear-activity"
+		"dialog:default"
 	]
 }
