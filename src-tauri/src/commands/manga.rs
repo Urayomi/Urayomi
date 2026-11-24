@@ -3,8 +3,7 @@ use std::io::{copy, Write};
 use std::path::Path;
 
 use image::ImageReader;
-use rand::distr::Alphanumeric;
-use rand::RngExt;
+
 use tauri::{AppHandle, Manager};
 
 use crate::models::{Book, BookMetadata, BookType};

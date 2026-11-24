@@ -1,8 +1,8 @@
 import { mangaStates } from "$lib/components/states/manga_list.svelte";
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import { setActivity } from "tauri-plugin-drpc";
-import { Activity, Timestamps } from "tauri-plugin-drpc/activity";
+import { setActivity, start } from "tauri-plugin-drpc";
+import { Activity, Assets, Timestamps } from "tauri-plugin-drpc/activity";
 
 export const MATCH = /[^/\\]+(?=\.[^.]+$|$)/;
 export const NAME_MATCH = new RegExp(
@@ -41,21 +41,29 @@ export async function selectFile() {
 		});
 	}
 }
+let rpc_ready: Promise<boolean> | null = null;
 
-export async function set_rpc(
-	details: string = "",
-	state: string = "",
-	important: boolean = false,
-) {
-	console.log(details, state);
-	const activity = new Activity()
-		.setDetails(details)
-		.setState(state)
-		.setTimestamps(new Timestamps(Date.now()));
-
-	await setActivity(activity);
+function init_rpc() {
+	rpc_ready ??= start("1385376580691427440")
+		.then(() => true)
+		.catch(() => false);
+	// mobile will catch to false
+	return rpc_ready;
 }
 
+export async function set_rpc(title: string, state: string) {
+	if (!(await init_rpc())) return;
+
+	try {
+		const activity = new Activity()
+			.setDetails(title)
+			.setState(state)
+			.setTimestamps(new Timestamps(Date.now()))
+			.setAssets(new Assets().setLargeImage("logo"));
+
+		await setActivity(activity);
+	} catch {}
+}
 export const novel_class =
 	"w-full max-w-3xl min-w-0 min-h-0 overflow-auto px-4 text-sm leading-relaxed " +
 	"[&_p]:mb-3 [&_h1]:mb-4 [&_h1]:text-xl [&_h1]:font-bold " +
