@@ -38,35 +38,85 @@
 
 > The legacy rewrite is the main blocker right now — new work lands on the
 > recoded codebase, and some legacy behavior may still leak through.
+>
+> Benchmarked against Mihon, Aidoku, Panels, Chunky, YACReader and JustRead:
+> these are the baseline features readers expect.
 
 ### Tabs & Navigation
 
 - [ ] Chrome/VSC-style tabbed topbar (replace the current topbar)
-- [ ] Restore open tabs and reading position on launch
-- [ ] Keyboard shortcuts and gamepad navigation for the reader
+- [ ] Restore open tabs, scroll position, and last page on launch
+- [ ] Keyboard shortcuts and gamepad navigation
+- [ ] Command palette / quick switcher (`Ctrl/Cmd+K`)
 
 ### Reader
 
 - [ ] Preview manga live when changing pages or settings
 - [ ] Reading features (progress, bookmarks, modes) on every route, not just Search
-- [ ] Reader settings: page fit, reading direction, single/dual-page mode
+- [ ] Viewer modes: paged, webtoon/vertical, infinite scroll
+- [ ] Reading direction: LTR/RTL, auto-detected from ComicInfo.xml
+- [ ] Double-page spreads and wide-page splitting
+- [ ] Guided/panel-by-panel view
+- [ ] Zoom/pan, double-tap zoom, page thumbnails, jump to page
+- [ ] Fit modes (width/height/original), crop borders, background color
+- [ ] Brightness, contrast, and grayscale/color correction
+- [ ] Configurable tap zones, volume-key paging, fullscreen, keep screen on, orientation lock
 - [ ] Preload and cache nearby pages to avoid flicker
+- [ ] Per-series reader setting overrides
 
 ### Library
 
 - [ ] Implement the Library page (currently empty)
 - [ ] Implement the History page with resume position
+- [ ] Read/unread state, chapter counters, continue-reading shelf
+- [ ] Categories/tags/collections with smart filters and sorting
+- [ ] Grid/list layouts and batch actions (mark read, favorite, delete)
 - [ ] Bookmark and progress tracking improvements
-- [ ] Automatic library scanning / folder watching
+- [ ] Folder watching / automatic library scan
 - [ ] Metadata editing and cover refresh
+- [ ] Duplicate detection and cleanup
+- [ ] Import from other readers (Mihon backup, YACReader/Panels folder layouts)
+
+### Files & Formats
+
+- [ ] CBR/RAR, CB7, CBT, PDF, and plain-folder support
+- [ ] Stream pages from archives instead of extracting everything
+- [ ] ComicInfo.xml parsing (series, volume, chapter, author, reading direction)
+- [ ] CBZ export/repack and batch conversion
+- [ ] Storage management: cache size limits and cleanup
+
+### Tracking & Sync
+
+- [ ] Tracker integrations: MAL, AniList, Kitsu, MangaUpdates, Shikimori, Bangumi, MangaBaka
+- [ ] Auto-update tracker progress/status when chapters are read
+- [ ] Local auto-backup and JSON export/import
+- [ ] Cloud sync via WebDAV, Dropbox, or Google Drive
+- [ ] OPDS client and Komga/Kavita/Suwayomi server support
+
+### Notifications & Automation
+
+- [ ] Scheduled library updates
+- [ ] New chapter notifications
+- [ ] Auto-import from watched folders and auto-download new chapters
+
+### Novels
+
+- [ ] Novel reader settings: font, size, line height, margins, themes
+- [ ] Chapter/TOC navigation and reading progress
+- [ ] Bookmarks, highlights, and notes
+- [ ] TTS read-aloud
+- [ ] Better EPUB parsing (chapters, cover, metadata)
 
 ### Content & Platform
 
 - [ ] Finish the extension-based content system
-- [ ] Offline downloads / page cache
-- [ ] Sync progress and bookmarks across devices
-- [ ] Light/dark/custom themes with accent colors
+- [ ] Download queue for extension sources (bulk and automatic)
+- [ ] Light/dark/AMOLED themes with accent colors
+- [ ] Reading statistics: time, pages, streaks, goals
+- [ ] Incognito mode and NSFW content filtering
+- [ ] Localization (i18n) and accessibility (screen reader, reduced motion, high contrast)
 - [ ] Mobile/tablet layouts with touch gestures
+- [ ] Discord Rich Presence improvements
 
 ---
 

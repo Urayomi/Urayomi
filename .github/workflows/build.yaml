@@ -1,0 +1,112 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag name for the release (e.g. v0.2.0)"
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ github.event.inputs.tag_name || github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  TAG_NAME: ${{ github.event.inputs.tag_name || github.ref_name }}
+
+jobs:
+  publish:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux (x86_64)
+            platform: ubuntu-22.04
+            args: "--bundles deb,appimage"
+            targets: ""
+          - name: Windows (x86_64)
+            platform: windows-latest
+            args: ""
+            targets: ""
+          - name: macOS (Apple Silicon)
+            platform: macos-latest
+            args: "--target aarch64-apple-darwin"
+            targets: aarch64-apple-darwin
+          - name: macOS (Intel)
+            platform: macos-latest
+            args: "--target x86_64-apple-darwin"
+            targets: x86_64-apple-darwin
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.targets }}
+
+      - name: cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+          key: ${{ matrix.targets || 'host' }}
+
+      - name: install Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            file \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libssl-dev \
+            libwebkit2gtk-4.1-dev \
+            libxdo-dev \
+            patchelf \
+            wget
+
+      - name: install frontend dependencies
+        run: npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
+
+      - name: build and publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ env.TAG_NAME }}
+          releaseName: "Urayomi ${{ env.TAG_NAME }}"
+          releaseBody: |
+            ## Download Info
+            Select the installer for your platform below.
+
+            ## Changelog
+            Check the automated notes below for a list of all changes in this version.
+          releaseDraft: false
+          prerelease: false
+          generateReleaseNotes: true
+          includeUpdaterJson: false
+          args: ${{ matrix.args }}
+
+# Android/iOS builds are intentionally not part of this workflow yet: they need a
+# mobile-ready UI plus signing secrets. Add dedicated jobs once those exist.
