@@ -2,13 +2,7 @@
 	import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 	import { page } from "$app/state";
 	import type { Book } from "$lib/types/LibraryManga";
-	import {
-		gutter_class,
-		load_novel_page,
-		novel_class,
-		set_rpc,
-	} from "$lib/constants/util";
-	import { ChevronLeft, ChevronRight } from "@lucide/svelte";
+	import { load_novel_page, novel_class, set_rpc } from "$lib/constants/util";
 
 	const params = new URLSearchParams(page.url.search);
 	const book: string | null = params.get("book");
@@ -26,9 +20,14 @@
 		current_page = Math.min(Math.max(current_page + delta * step, 0), max);
 	}
 
-	const can_prev = $derived(current_page > 0);
-	const can_next = $derived(current_page < total - 1);
-	const last_visible = $derived(Math.min(current_page + step, total));
+	function handle_press(e: MouseEvent & { currentTarget: HTMLDivElement }) {
+		if (e.button !== 0) return;
+
+		const rect = e.currentTarget.getBoundingClientRect();
+		const in_left_half = e.clientX - rect.left < rect.width / 2;
+
+		go(in_left_half ? -1 : 1);
+	}
 
 	$effect(() => {
 		set_rpc(
@@ -39,10 +38,7 @@
 
 	let leftSrc = $state("");
 
-	async function update_pages(
-		first: string | undefined,
-		second: string | undefined,
-	) {
+	async function update_pages(first: string | undefined) {
 		leftSrc = "";
 
 		if (is_novel) {
@@ -58,7 +54,7 @@
 
 		if (is_novel) {
 			queueMicrotask(() => {
-				void update_pages(first, second);
+				void update_pages(first);
 			});
 		} else {
 			leftSrc = second ? convertFileSrc(second) : "";
@@ -67,49 +63,22 @@
 </script>
 
 <div
-	class="flex h-full w-full min-h-0 min-w-0 flex-col gap-2 text-primary-text"
+	role="presentation"
+	onmousedown={handle_press}
+	class="flex h-full w-full min-h-0 min-w-0 cursor-pointer flex-col gap-2 text-primary-text {is_novel
+		? ''
+		: 'select-none'}"
 >
 	<div
 		class="flex min-h-0 min-w-0 flex-1 gap-3 overflow-x-hidden overflow-y-auto"
 	>
 		{#if is_novel}
-			<button
-				onclick={() => go(-1)}
-				disabled={!can_prev}
-				aria-label="Previous page"
-				tabindex="-1"
-				class={gutter_class}
-			>
-				{#if can_prev}
-					<ChevronLeft
-						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
-					/>
-				{/if}
-			</button>
 			<div class={novel_class}>
 				{@html leftSrc}
 			</div>
-
-			<button
-				onclick={() => go(1)}
-				disabled={!can_next}
-				aria-label="Next page"
-				tabindex="-1"
-				class={gutter_class}
-			>
-				{#if can_next}
-					<ChevronRight
-						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
-					/>
-				{/if}
-			</button>
 		{:else}
-			<button
-				onclick={() => go(-1)}
-				disabled={!can_prev}
-				aria-label="Previous page"
-				tabindex="-1"
-				class={gutter_class}
+			<div
+				class="relative flex min-h-0 min-w-0 flex-1 items-center justify-center"
 			>
 				{#if can_prev}
 					<ChevronLeft
@@ -126,35 +95,7 @@
 					src={leftSrc}
 					class="block max-h-full max-w-full rounded object-contain pointer-events-none"
 				/>
-
-				<button
-					onclick={() => go(-1)}
-					disabled={!can_prev}
-					aria-label="Previous page"
-					class="absolute inset-y-0 left-0 w-1/2 cursor-pointer"
-				></button>
-
-				<button
-					onclick={() => go(1)}
-					disabled={!can_next}
-					aria-label="Next page"
-					class="absolute inset-y-0 right-0 w-1/2 cursor-pointer"
-				></button>
 			</div>
-
-			<button
-				onclick={() => go(1)}
-				disabled={!can_next}
-				aria-label="Next page"
-				tabindex="-1"
-				class={gutter_class}
-			>
-				{#if can_next}
-					<ChevronRight
-						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
-					/>
-				{/if}
-			</button>
 		{/if}
 	</div>
 
@@ -165,30 +106,10 @@
 			{data.metadata.title}
 		</span>
 
-		<div class="flex shrink-0 items-center gap-1">
-			<button
-				onclick={() => go(1)}
-				disabled={!can_next}
-				aria-label="Next pages"
-				class="flex size-7 items-center justify-center rounded hover:bg-primary-text/10 disabled:opacity-30 disabled:hover:bg-transparent"
-			>
-				<ChevronLeft class="size-4" />
-			</button>
-
-			<span
-				class="min-w-24 text-center text-xs tabular-nums text-primary-text/50"
-			>
-				{current_page} / {total}
-			</span>
-
-			<button
-				onclick={() => go(-1)}
-				disabled={!can_prev}
-				aria-label="Previous pages"
-				class="flex size-7 items-center justify-center rounded hover:bg-primary-text/10 disabled:opacity-30 disabled:hover:bg-transparent"
-			>
-				<ChevronRight class="size-4" />
-			</button>
-		</div>
+		<span
+			class="min-w-24 text-center text-xs tabular-nums text-primary-text/50"
+		>
+			{current_page} / {total}
+		</span>
 	</div>
 </div>
