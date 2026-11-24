@@ -36,8 +36,37 @@
 
 ## Roadmap
 
-- Chrome/VSC like tabs
-- Bookmark and progress tracking improvements
+> The legacy rewrite is the main blocker right now — new work lands on the
+> recoded codebase, and some legacy behavior may still leak through.
+
+### Tabs & Navigation
+
+- [ ] Chrome/VSC-style tabbed topbar (replace the current topbar)
+- [ ] Restore open tabs and reading position on launch
+- [ ] Keyboard shortcuts and gamepad navigation for the reader
+
+### Reader
+
+- [ ] Preview manga live when changing pages or settings
+- [ ] Reading features (progress, bookmarks, modes) on every route, not just Search
+- [ ] Reader settings: page fit, reading direction, single/dual-page mode
+- [ ] Preload and cache nearby pages to avoid flicker
+
+### Library
+
+- [ ] Implement the Library page (currently empty)
+- [ ] Implement the History page with resume position
+- [ ] Bookmark and progress tracking improvements
+- [ ] Automatic library scanning / folder watching
+- [ ] Metadata editing and cover refresh
+
+### Content & Platform
+
+- [ ] Finish the extension-based content system
+- [ ] Offline downloads / page cache
+- [ ] Sync progress and bookmarks across devices
+- [ ] Light/dark/custom themes with accent colors
+- [ ] Mobile/tablet layouts with touch gestures
 
 ---
 
