@@ -238,7 +238,8 @@ jobs:
             ios-${{ runner.os }}-
 
       - name: install frontend dependencies
-        run: npm ci --prefer-offline --no-audit --no-fund
+        run: npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
+
 
       - name: create xcodebuild wrapper
         run: |
