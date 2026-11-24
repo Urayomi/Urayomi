@@ -43,26 +43,30 @@ export async function selectFile() {
 }
 let rpc_ready: Promise<boolean> | null = null;
 
-function init_rpc() {
+export function init_rpc() {
 	rpc_ready ??= start("1385376580691427440")
 		.then(() => true)
-		.catch(() => false);
-	// mobile will catch to false
+		.catch((e) => {
+			console.error("failed to start discord rpc:", e);
+			return false;
+		});
 	return rpc_ready;
 }
 
 export async function set_rpc(title: string, state: string) {
-	if (!(await init_rpc())) return;
+	if (!(await rpc_ready)) return;
 
 	try {
 		const activity = new Activity()
 			.setDetails(title)
 			.setState(state)
-			.setTimestamps(new Timestamps(Date.now()))
+			.setTimestamps(new Timestamps(Math.floor(Date.now() / 1000)))
 			.setAssets(new Assets().setLargeImage("logo"));
 
 		await setActivity(activity);
-	} catch {}
+	} catch (e) {
+		console.error("failed to set discord rpc activity:", e);
+	}
 }
 export const novel_class =
 	"w-full max-w-3xl min-w-0 min-h-0 overflow-auto px-4 text-sm leading-relaxed " +

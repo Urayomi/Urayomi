@@ -5,8 +5,9 @@
 	import "./layout.css";
 	const { children } = $props();
 
-	import { set_rpc } from "$lib/constants/util";
+	import { init_rpc, set_rpc } from "$lib/constants/util";
 
+	await init_rpc();
 	set_rpc("Reading Manga...", "Home page");
 </script>
 
