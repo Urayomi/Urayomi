@@ -25,6 +25,12 @@
 	--font-display: "Monda", sans-serif;
 }
 
+/* disable x scrolling. keep y scrolling when it overflow */
+html,
+body {
+	overflow-x: hidden;
+}
+
 .candy {
 	--bg-main: #fff0f5;
 	--bg-titlebar: #ffe4e1;

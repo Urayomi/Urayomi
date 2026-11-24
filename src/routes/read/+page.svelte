@@ -69,7 +69,9 @@
 <div
 	class="flex h-full w-full min-h-0 min-w-0 flex-col gap-2 text-primary-text"
 >
-	<div class="flex min-h-0 min-w-0 flex-1 gap-3">
+	<div
+		class="flex min-h-0 min-w-0 flex-1 gap-3 overflow-x-hidden overflow-y-auto"
+	>
 		{#if is_novel}
 			<button
 				onclick={() => go(-1)}
@@ -110,17 +112,19 @@
 				class={gutter_class}
 			>
 				{#if can_prev}
-					<ChevronRight
+					<ChevronLeft
 						class="size-5 text-primary-text/50 opacity-0 group-hover:opacity-100"
 					/>
 				{/if}
 			</button>
 
-			<div class="relative flex w-fit h-fit min-w-0 min-h-0">
+			<div
+				class="relative flex min-h-0 min-w-0 flex-1 items-center justify-center"
+			>
 				<img
 					alt="Page {current_page + 1}"
 					src={leftSrc}
-					class="max-w-full max-h-full rounded object-contain pointer-events-none"
+					class="block max-h-full max-w-full rounded object-contain pointer-events-none"
 				/>
 
 				<button

@@ -60,12 +60,6 @@
 					text-anchor="middle">YOMI</text
 				>
 			</svg>
-
-			<span
-				class="text-[10px] font-black tracking-[0.2em] uppercase text-primary-text"
-			>
-				Urayomi
-			</span>
 		</button>
 	</div>
 
