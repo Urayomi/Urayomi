@@ -110,3 +110,7 @@ export async function favorite_manga(path: string) {
 	await invoke("favorite_manga", { path });
 	mangaStates.manga_list = await invoke("get_manga_list");
 }
+
+export async function save_progress(path: string, page: number) {
+	await invoke("save_progress", { path, page });
+}

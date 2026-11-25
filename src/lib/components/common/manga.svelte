@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { favorite_manga } from "$lib/constants/util";
+	import type { Book } from "$lib/types/LibraryManga";
+	import { open_tab } from "$lib/components/states/tabs.svelte";
 	import { Star } from "@lucide/svelte";
 	import { convertFileSrc } from "@tauri-apps/api/core";
 
@@ -8,7 +10,7 @@
 		manga,
 		open = $bindable(),
 	}: {
-		manga: { location: string; cover_location: string; favorite: boolean };
+		manga: Book;
 		open: string | null;
 	} = $props();
 </script>
@@ -63,7 +65,10 @@
 
 			<button
 				type="button"
-				onclick={() => goto(`/read?book=${encodeURIComponent(manga.location)}`)}
+				onclick={() => {
+					open_tab(manga);
+					goto(`/read?book=${encodeURIComponent(manga.location)}`);
+				}}
 				class="rounded bg-primary-text/10 py-1.5 text-xs font-medium text-primary-text transition hover:bg-primary-text/20"
 			>
 				Read

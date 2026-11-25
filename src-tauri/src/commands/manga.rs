@@ -1,6 +1,7 @@
 use std::fs::{create_dir_all, File};
 use std::io::{copy, Write};
 use std::path::Path;
+use std::time::SystemTime;
 
 use image::ImageReader;
 use rand::distr::Alphanumeric;
@@ -164,6 +165,25 @@ pub fn get_novel_page(path: &str) -> Result<String, String> {
     let entry = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
 
     Ok(entry)
+}
+
+#[tauri::command(async)]
+pub fn save_progress(path: &str, page: usize) -> Result<(), String> {
+    let meta_path = Path::new(path).join("meta.json");
+    let entry = std::fs::read(&meta_path).map_err(|e| e.to_string())?;
+
+    let mut data: Book = serde_json::from_slice(&entry).map_err(|e| e.to_string())?;
+
+    data.metadata.current_page = page;
+    data.metadata.last_opened = SystemTime::now();
+
+    let json = serde_json::to_string_pretty(&data).map_err(|e| e.to_string())?;
+
+    std::fs::write(&meta_path, json).map_err(|e| e.to_string())?;
+
+    // no need to return the data. frontend doesnt use any data that is returned here
+    // NOTE: return the data in the future if frontend wants to know the save timestamp etc etc
+    Ok(())
 }
 
 #[tauri::command(async)]

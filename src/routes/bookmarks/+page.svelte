@@ -2,6 +2,7 @@
 	import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 
 	import { mangaStates } from "$lib/components/states/manga_list.svelte";
+	import { open_tab } from "$lib/components/states/tabs.svelte";
 	import { goto } from "$app/navigation";
 	import { Star } from "@lucide/svelte";
 
@@ -68,7 +69,11 @@
 							{manga.location}
 						</p>
 						<button
-							onclick={() => goto(`/read?book=${manga.location}`)}
+							onclick={() => {
+								// open a new tab on new manga read
+								open_tab(manga);
+								goto(`/read?book=${encodeURIComponent(manga.location)}`);
+							}}
 							class="rounded bg-primary-text py-1.5 font-medium text-neutral-900 hover:bg-neutral-200"
 						>
 							Read
