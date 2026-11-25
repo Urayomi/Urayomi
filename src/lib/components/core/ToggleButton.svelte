@@ -40,6 +40,7 @@
             transition-colors duration-200 ease-in-out focus:outline-none
             {checked ? 'bg-accent' : 'bg-primary-text/10'}
         "
+		aria-label="Toggle"
 	>
 		<span
 			aria-hidden="true"

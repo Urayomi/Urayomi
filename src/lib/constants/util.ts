@@ -69,13 +69,13 @@ export async function set_rpc(title: string, state: string) {
 	}
 }
 export const novel_class =
-	"w-full max-w-3xl min-w-0 min-h-0 overflow-auto px-4 text-sm leading-relaxed " +
+	"w-full max-w-3xl min-w-0 min-h-0 overflow-x-hidden overflow-y-auto px-4 text-sm leading-relaxed " +
 	"[&_p]:mb-3 [&_h1]:mb-4 [&_h1]:text-xl [&_h1]:font-bold " +
 	"[&_h2]:mb-3 [&_h2]:text-lg [&_h2]:font-bold " +
-	"[&_img]:mx-auto [&_img]:my-3 [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:max-w-full";
+	"[&_img]:mx-auto [&_img]:my-3 [&_img]:max-w-full [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:max-w-full";
 
 export const gutter_class =
-	"group flex min-w-10 flex-1 basis-0 items-center justify-center rounded " +
+	"group flex w-10 shrink-0 items-center justify-center rounded " +
 	"enabled:cursor-pointer enabled:hover:bg-primary-text/10 disabled:cursor-default";
 
 export function to_asset_url(ref: string, dir: string): string {
@@ -121,4 +121,8 @@ export async function load_novel_page(
 export async function favorite_manga(path: string) {
 	await invoke("favorite_manga", { path });
 	mangaStates.manga_list = await invoke("get_manga_list");
+}
+
+export async function save_progress(path: string, page: number) {
+	await invoke("save_progress", { path, page });
 }

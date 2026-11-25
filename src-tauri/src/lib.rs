@@ -18,6 +18,7 @@ pub fn run() {
             commands::manga::get_manga_list,
             commands::manga::get_manga,
             commands::manga::get_novel_page,
+            commands::manga::save_progress,
             commands::manga::favorite_manga
         ])
         .run(tauri::generate_context!())

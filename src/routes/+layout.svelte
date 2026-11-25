@@ -11,7 +11,7 @@
 	set_rpc("Reading Manga...", "Home page");
 </script>
 
-<main class="flex w-screen h-screen">
+<main class="flex h-dvh w-full">
 	{#if !sidebarState.hidden}
 		<Sidebar />
 	{/if}
@@ -19,7 +19,7 @@
 		<Titlebar />
 
 		<div
-			class="bg-background min-h-0 min-w-0 flex flex-1 rounded-tl-2xl p-2 overflow-scroll"
+			class="bg-background min-h-0 min-w-0 flex flex-1 rounded-tl-2xl p-2 overflow-hidden"
 		>
 			{@render children()}
 		</div>
